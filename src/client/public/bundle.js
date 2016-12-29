@@ -76,7 +76,8 @@
 	
 			_this.state = {
 				recipeName: 'Spaghetti',
-				image: 'http://placehold.it/100x100'
+				image: 'http://placehold.it/100x100',
+				ingredient: 'Tomato'
 	
 			};
 			return _this;
@@ -88,8 +89,9 @@
 				return _react2.default.createElement(
 					'div',
 					{ className: 'container' },
-					_react2.default.createElement(Recipe, { name: this.state.recipeName, image: this.state.image }),
-					_react2.default.createElement(AddRecipe, null)
+					_react2.default.createElement(Recipe, { name: this.state.recipeName, image: this.state.image, ingredient: this.state.ingredient }),
+					_react2.default.createElement(AddRecipe, null),
+					_react2.default.createElement(DeleteRecipe, null)
 				);
 			}
 		}]);
@@ -104,12 +106,7 @@
 		function Recipe(props, context) {
 			_classCallCheck(this, Recipe);
 	
-			var _this2 = _possibleConstructorReturn(this, (Recipe.__proto__ || Object.getPrototypeOf(Recipe)).call(this, props, context));
-	
-			_this2.state = {
-				ingredient: 'Tomato'
-			};
-			return _this2;
+			return _possibleConstructorReturn(this, (Recipe.__proto__ || Object.getPrototypeOf(Recipe)).call(this, props, context));
 		}
 	
 		_createClass(Recipe, [{
@@ -126,7 +123,7 @@
 						' '
 					),
 					_react2.default.createElement('img', { src: this.props.image }),
-					_react2.default.createElement(Ingredient, { ingredient: this.state.ingredient })
+					_react2.default.createElement(Ingredient, { ingredient: this.props.ingredient })
 				);
 			}
 		}]);
@@ -161,7 +158,7 @@
 							'span',
 							null,
 							' ',
-							this.props.name,
+							this.props.ingredient,
 							' '
 						)
 					)
@@ -182,6 +179,19 @@
 	
 			return _possibleConstructorReturn(this, (DeleteRecipe.__proto__ || Object.getPrototypeOf(DeleteRecipe)).apply(this, arguments));
 		}
+	
+		_createClass(DeleteRecipe, [{
+			key: 'render',
+	
+			//DeleteRecipe will remove a Recipe object
+			value: function render() {
+				return _react2.default.createElement(
+					'button',
+					{ className: 'delete-recipe' },
+					'Delete Recipe'
+				);
+			}
+		}]);
 	
 		return DeleteRecipe;
 	}(_react2.default.Component);
