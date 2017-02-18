@@ -25114,9 +25114,9 @@
 	
 	var _reduxForm = __webpack_require__(/*! redux-form */ 244);
 	
-	var _addRecipeFormComponent = __webpack_require__(/*! ./addRecipeForm-component.jsx */ 454);
+	var _addRecipeFormContainer = __webpack_require__(/*! ../containers/addRecipeForm-container.jsx */ 458);
 	
-	var _addRecipeFormComponent2 = _interopRequireDefault(_addRecipeFormComponent);
+	var _addRecipeFormContainer2 = _interopRequireDefault(_addRecipeFormContainer);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -25165,20 +25165,13 @@
 					null,
 					headerMessage
 				),
-				_react2.default.createElement(_addRecipeFormComponent2.default, { addNewRecipe: addNewRecipe }),
+				_react2.default.createElement(_addRecipeFormContainer2.default, null),
 				_react2.default.createElement(
 					'button',
 					{ onClick: function onClick() {
 							return closeRecipeModal();
 						} },
 					'Close'
-				),
-				_react2.default.createElement(
-					'button',
-					{ onClick: function onClick() {
-							return addNewRecipe();
-						} },
-					'Create it!'
 				)
 			)
 		);
@@ -25189,6 +25182,7 @@
 	// 	isAddRecipeOpen: PropTypes.boolean,
 	// }
 	
+	//import RecipeForm from './addRecipeForm-component.jsx'
 	exports.default = RecipeIndex;
 
 /***/ },
@@ -37548,21 +37542,26 @@
 	var required = function required(value) {
 	  return value ? undefined : 'Required';
 	};
-	
-	var RecipeForm = function RecipeForm(_ref2) {
-	  var props = _ref2.props,
-	      addNewRecipe = _ref2.addNewRecipe;
+	var RecipeForm = function RecipeForm(props) {
 	  var handleSubmit = props.handleSubmit,
 	      reset = props.reset,
-	      onSubmit = props.onSubmit;
+	      onSubmit = props.onSubmit,
+	      addNewRecipe = props.addNewRecipe;
 	
 	  console.log(props);
+	
+	  var handleAdd = function handleAdd(fields) {
+	    addNewRecipe(fields);
+	  };
+	
 	  return _react2.default.createElement(
 	    'div',
 	    null,
 	    _react2.default.createElement(
 	      'form',
-	      { onSubmit: handleSubmit(undefined.addNewRecipe) },
+	      { onSubmit: handleSubmit(function (fields) {
+	          return handleAdd(fields);
+	        }) },
 	      _react2.default.createElement(
 	        'div',
 	        null,
@@ -37600,7 +37599,7 @@
 	      _react2.default.createElement(
 	        'button',
 	        { type: 'submit' },
-	        'Create it and work!'
+	        'Create it and work (please)!'
 	      ),
 	      _react2.default.createElement(
 	        'button',
@@ -37611,9 +37610,7 @@
 	  );
 	};
 	
-	exports.default = (0, _reduxForm.reduxForm)({
-	  form: 'simple' // a unique identifier for this form
-	})(RecipeForm);
+	exports.default = RecipeForm;
 
 /***/ },
 /* 455 */
@@ -37644,6 +37641,7 @@
 	
 	//add it to the object at a new index? do we need to do that? or just add it to the bottom of an object?
 	var addNewRecipe = exports.addNewRecipe = function addNewRecipe(fields) {
+		console.log(fields);
 		return {
 			type: 'CREATE_RECIPE',
 			recipeInfo: fields
@@ -37740,6 +37738,55 @@
 	};
 	
 	exports.default = recipeReducer;
+
+/***/ },
+/* 458 */
+/*!********************************************************!*\
+  !*** ./src/app/containers/addRecipeForm-container.jsx ***!
+  \********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
+	
+	var _addRecipeFormComponent = __webpack_require__(/*! ../components/addRecipeForm-component.jsx */ 454);
+	
+	var _addRecipeFormComponent2 = _interopRequireDefault(_addRecipeFormComponent);
+	
+	var _recipeIndexActions = __webpack_require__(/*! ../actions/recipeIndex-actions.jsx */ 455);
+	
+	var _reduxForm = __webpack_require__(/*! redux-form */ 244);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {};
+	};
+	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	
+	    addNewRecipe: function addNewRecipe(fields) {
+	      dispatch((0, _recipeIndexActions.addNewRecipe)(fields));
+	      dispatch((0, _recipeIndexActions.closeRecipeModal)());
+	    }
+	  };
+	};
+	
+	// const RecipeFormContainer = connect(
+	//   mapStateToProps,
+	//   mapDispatchToProps
+	// )(RecipeForm)
+	
+	//export default RecipeFormContainer
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)((0, _reduxForm.reduxForm)({
+	  form: 'RecipeForm'
+	})(_addRecipeFormComponent2.default));
 
 /***/ }
 /******/ ]);

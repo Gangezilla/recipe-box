@@ -12,18 +12,24 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
   </div>
 )
 
-const required = value => value ? undefined : 'Required'
 
-const RecipeForm = ({ props, addNewRecipe }) => {
-  const { handleSubmit, reset, onSubmit } = props
+
+const required = value => value ? undefined : 'Required'
+const RecipeForm = ( props ) => {
+  const { handleSubmit, reset, onSubmit, addNewRecipe } = props
   console.log(props)
+
+  const handleAdd = (fields) => {
+    addNewRecipe(fields)
+  }
+
   return (
   	<div>
-    <form onSubmit={handleSubmit(this.addNewRecipe)}>
+    <form onSubmit={handleSubmit((fields) => handleAdd(fields))}>
       <div>
         <div>
         	<label>Name of Recipe</label>
-         	<Field name="RecipeName" component={renderField} type="text" placeholder="Name" validate={required}/>
+          <Field name="RecipeName" component={renderField} type="text" placeholder="Name" validate={required}/>
         </div>
          <div>
 	         <label>Description</label>
@@ -34,13 +40,11 @@ const RecipeForm = ({ props, addNewRecipe }) => {
 	         <Field name="RecipeIngredients" component="textarea" placeholder="Seperate ingredients with commas"/>
         </div>
       </div>
-        <button type="submit">Create it and work!</button>
+        <button type="submit">Create it and work (please)!</button>
         <button type="button" onClick={reset}>Start Again</button>
     </form>
     </div>
   )
 }
 
-export default reduxForm({
-  form: 'simple'  // a unique identifier for this form
-})(RecipeForm)
+export default RecipeForm

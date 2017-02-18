@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
 import { Field, reduxForm } from 'redux-form'
-import RecipeForm from './addRecipeForm-component.jsx'
+//import RecipeForm from './addRecipeForm-component.jsx'
+import RecipeFormContainer from '../containers/addRecipeForm-container.jsx'
 
 //props go in here.
 const RecipeIndex = ({ openRecipeModal, closeRecipeModal, isAddRecipeOpen, headerMessage, addNewRecipe }) => {
@@ -19,9 +20,8 @@ const RecipeIndex = ({ openRecipeModal, closeRecipeModal, isAddRecipeOpen, heade
 		  	contentLabel="Add New Recipe"
 		>
 		  	<h1>{headerMessage}</h1>
-		  	<RecipeForm addNewRecipe={addNewRecipe}/>
+		  	<RecipeFormContainer />
 		  	<button onClick= {() => closeRecipeModal()}>Close</button>
-		  	<button onClick={() => addNewRecipe()}>Create it!</button>
 		</Modal>
 		</div>
 	)
