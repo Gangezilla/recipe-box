@@ -5,7 +5,7 @@ import { Field, reduxForm } from 'redux-form'
 import RecipeForm from './addRecipeForm-component.jsx'
 
 //props go in here.
-const RecipeIndex = ({ openRecipeModal, closeRecipeModal, isAddRecipeOpen }) => {
+const RecipeIndex = ({ openRecipeModal, closeRecipeModal, isAddRecipeOpen, headerMessage, addNewRecipe }) => {
 	return (
 		<div>
 			<h2> working real well! </h2>
@@ -18,9 +18,10 @@ const RecipeIndex = ({ openRecipeModal, closeRecipeModal, isAddRecipeOpen }) => 
 		  	style=""
 		  	contentLabel="Add New Recipe"
 		>
-		  	<h1>Adding a new recipe!</h1>
-		  	<RecipeForm />
+		  	<h1>{headerMessage}</h1>
+		  	<RecipeForm addNewRecipe={addNewRecipe}/>
 		  	<button onClick= {() => closeRecipeModal()}>Close</button>
+		  	<button onClick={() => addNewRecipe()}>Create it!</button>
 		</Modal>
 		</div>
 	)

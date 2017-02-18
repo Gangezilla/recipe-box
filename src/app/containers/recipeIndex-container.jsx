@@ -7,6 +7,7 @@ import { addNewRecipe, openRecipeModal, closeRecipeModal } from '../actions/reci
 const mapStateToProps = (state) => {
   return {
   	isAddRecipeOpen: state.recipeReducer.isAddRecipeOpen,
+  	headerMessage: state.recipeReducer.headerMessage,
   }
 }
 
@@ -20,7 +21,7 @@ const mapDispatchToProps = (dispatch) => {
     	dispatch(closeRecipeModal())
     },
 
-    handleSubmit: () => {
+    addNewRecipe: () => {
     	dispatch(addNewRecipe())
     }
   }
