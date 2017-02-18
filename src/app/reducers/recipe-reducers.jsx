@@ -1,22 +1,24 @@
 const recipeReducer = (state = {}, action) => {
+	if (state === undefined) {
+		return {
+			isAddRecipeOpen: false,
+		}
+	}
+
 	switch (action.type) {
-		case 'TEST':
+		case 'OPEN_MODAL':
 			return {
-				test: action
+				isAddRecipeOpen: true
 			}
+
+		case 'CLOSE_MODAL':
+		return {
+			isAddRecipeOpen: false
+		}
 
     	default:
       		return state
   	}
 }
-
-// function recipeReducer (state = {}, action) {
-//   switch (action.type) {
-//     case 'SET_VISIBILITY_FILTER':
-//       return action.filter
-//     default:
-//       return state
-//   }
-// }
 
 export default recipeReducer
