@@ -71,9 +71,9 @@
 	
 	var store = (0, _redux.createStore)(_index2.default);
 	
-	store.subscribe(function () {
-		return console.log('index: ', store.getState());
-	});
+	// store.subscribe(() =>
+	// 	console.log('index: ',store.getState())
+	// )
 	
 	(0, _reactDom.render)(_react2.default.createElement(
 		_reactRedux.Provider,
@@ -25134,9 +25134,9 @@
 		    isAddRecipeOpen = _ref.isAddRecipeOpen,
 		    headerMessage = _ref.headerMessage,
 		    addNewRecipe = _ref.addNewRecipe,
-		    init = _ref.init;
+		    Recipes = _ref.Recipes;
 	
-	
+		console.log(Recipes);
 		return _react2.default.createElement(
 			'div',
 			null,
@@ -25149,6 +25149,24 @@
 				'p',
 				null,
 				'Need to have a ul in here that will map through our recipes '
+			),
+			_react2.default.createElement(
+				'ul',
+				null,
+				_react2.default.createElement(
+					'li',
+					null,
+					' Test '
+				),
+				Recipes.map(function (recipe) {
+					return _react2.default.createElement(
+						'li',
+						null,
+						' ',
+						recipe.RecipeName,
+						' '
+					);
+				}.bind(undefined))
 			),
 			_react2.default.createElement(
 				'p',
@@ -37755,7 +37773,10 @@
 	var recipeReducer = function recipeReducer(state, action) {
 		if (state === undefined) {
 			return {
-				Recipes: []
+				Recipes: [{
+					RecipeName: 'Pizza',
+					RecipeDescription: 'A tasty, treat for all involved.'
+				}]
 			};
 		}
 	
@@ -37779,60 +37800,15 @@
 				return Object.assign({}, state, {
 					Recipes: recipes
 				});
-			// ...state,
-			// Recipes: [...state, action.recipeInfo]
-			// if (state.Recipes !== undefined) {
-			// 	console.log('normal state: ', state.Recipes)
-			// 	var recipes = state.Recipes.slice(0)
-			// 	console.log('recipes var: ', recipes)
-			// 	recipes.push(action.recipeInfo)
-			// 	return Object.assign({}, state, {
-			// 		Recipes: recipes
-			// 	})
-			// }
-			// else{
-			// 	console.log('state undefined', state)
-			// 	return Object.assign({}, state, {
-			// 		Recipes: action.recipeInfo
-			// 	})
-			// }
-			// return [
-			// 	...state.Recipes,
-			// 	action.recipeInfo
-			// ]
+	
+			case 'EDIT_RECIPE':
+	
+			case 'DELETE_RECIPE':
 	
 			default:
 				return state;
 		}
 	};
-	//case 'ADD_COLOR':
-	// var colours = state.colours.slice(0)
-	// 			colours.push(action.text.colour)	
-	// 			return Object.assign({}, state, {
-	// 				colours: colours
-	// 			})
-	
-	// case ADD_ITEM :
-	//     return {
-	//         ...state,
-	//         arr: state.arr.concat(action.newItem)
-	//     }
-	//			return [
-	//		       ...state,
-	//		       action.text
-	//	        ]
-	//		case 'REMOVE_COLOR':
-	//			return state.filter(index => index.colour !== action.text.colour)
-	//		case 'ADD_SIZE':
-	//			return [
-	//		       ...state,
-	//		       action.text
-	//	        ]
-	//		case 'REMOVE_SIZE':
-	//			return state.filter(index => index.size !== action.text.size)
-	//		default:
-	//			return state
-	//	}
 	exports.default = recipeReducer;
 
 /***/ }

@@ -7,12 +7,20 @@ import RecipeFormContainer from '../containers/addRecipeForm-container.jsx'
 
 //props go in here.
 
-const RecipeIndex = ({ openRecipeModal, closeRecipeModal, isAddRecipeOpen, headerMessage, addNewRecipe, init }) => {
-
+const RecipeIndex = ({ openRecipeModal, closeRecipeModal, isAddRecipeOpen, headerMessage, addNewRecipe, Recipes }) => {
+console.log(Recipes)
 	return (
 		<div>
 			<h2> working real well! </h2>
 			<p>Need to have a ul in here that will map through our recipes </p>
+			<ul>
+				<li> Test </li>
+				{Recipes.map(function(recipe) {
+					return (
+						<li> {recipe.RecipeName} </li>
+						)
+				}.bind(this))}
+			</ul>
 			<p> next, need to have a button in here with an onclick to generate a new recipe </p>
 			<button onClick={() => openRecipeModal()}> Add a new recipe </button>
 
