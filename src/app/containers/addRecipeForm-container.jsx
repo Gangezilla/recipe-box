@@ -19,12 +19,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-// const RecipeFormContainer = connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(RecipeForm)
-
-//export default RecipeFormContainer
 export default connect(mapStateToProps,
                        mapDispatchToProps)(reduxForm({
   form: 'RecipeForm'

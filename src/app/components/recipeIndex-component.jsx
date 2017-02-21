@@ -6,7 +6,9 @@ import { Field, reduxForm } from 'redux-form'
 import RecipeFormContainer from '../containers/addRecipeForm-container.jsx'
 
 //props go in here.
-const RecipeIndex = ({ openRecipeModal, closeRecipeModal, isAddRecipeOpen, headerMessage, addNewRecipe }) => {
+
+const RecipeIndex = ({ openRecipeModal, closeRecipeModal, isAddRecipeOpen, headerMessage, addNewRecipe, init }) => {
+
 	return (
 		<div>
 			<h2> working real well! </h2>

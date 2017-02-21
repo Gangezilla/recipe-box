@@ -1,3 +1,10 @@
+export const initState = () => {
+	return {
+		type: 'INITIALISE',
+		Recipes: [],
+	}
+}
+
 export const openRecipeModal = () => {
 	return {
 	    type: 'OPEN_MODAL',

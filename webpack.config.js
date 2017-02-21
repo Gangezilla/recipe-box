@@ -15,8 +15,11 @@ var config = {
     module: {
         loaders: [{
             test: /\.jsx?/,
-            include: APP_DIR,
-            loader: 'babel'
+            loader: 'babel-loader',
+            query: {
+                        presets: ['es2015'],
+                    },
+            exclude: /node_modules/
         }]
     },
 

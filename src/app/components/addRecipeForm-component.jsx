@@ -17,15 +17,10 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
 const required = value => value ? undefined : 'Required'
 const RecipeForm = ( props ) => {
   const { handleSubmit, reset, onSubmit, addNewRecipe } = props
-  console.log(props)
-
-  const handleAdd = (fields) => {
-    addNewRecipe(fields)
-  }
 
   return (
   	<div>
-    <form onSubmit={handleSubmit((fields) => handleAdd(fields))}>
+    <form onSubmit={handleSubmit((fields) => addNewRecipe(fields))}>
       <div>
         <div>
         	<label>Name of Recipe</label>
