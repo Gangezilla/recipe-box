@@ -1,10 +1,3 @@
-export const initState = () => {
-	return {
-		type: 'INITIALISE',
-		Recipes: [],
-	}
-}
-
 export const openRecipeModal = () => {
 	return {
 	    type: 'OPEN_MODAL',
@@ -29,12 +22,18 @@ export const addNewRecipe = (fields) => {
   	}
 }
 
-export const editRecipe = (recipe) => {
-	//take in a recipe, allow you to change parts of it.
+export const deleteRecipe = (ID) => {
+	return {
+		type: 'DELETE_RECIPE',
+		ID: ID
+	}
 }
 
-export const deleteRecipe = (recipe) => {
-	//take in recipe, pop box to ask to confirm if we want to delete it or whatever.
+export const editRecipe = (ID) => {
+	return {
+		type: 'EDIT_RECIPE',
+		ID: ID
+	}
 }
 
 

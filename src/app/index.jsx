@@ -7,9 +7,9 @@ import rootReducer from './reducers/index.jsx'
 
 let store = createStore(rootReducer)
 
-// store.subscribe(() =>
-// 	console.log('index: ',store.getState())
-// )
+store.subscribe(() =>
+	console.log('index: ',store.getState())
+)
 
 render(
 	<Provider store={store}>

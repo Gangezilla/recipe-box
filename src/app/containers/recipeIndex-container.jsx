@@ -2,7 +2,7 @@
 //action to create a new recipe.
 import { connect } from 'react-redux'
 import RecipeIndex from '../components/recipeIndex-component.jsx'
-import { addNewRecipe, openRecipeModal, closeRecipeModal, initState } from '../actions/recipeIndex-actions.jsx'
+import { addNewRecipe, openRecipeModal, closeRecipeModal, deleteRecipe, editRecipe } from '../actions/recipeIndex-actions.jsx'
 
 const mapStateToProps = (state) => {
   return {
@@ -14,7 +14,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-
   	openRecipeModal: () => {
       dispatch(openRecipeModal())
     },
@@ -25,7 +24,15 @@ const mapDispatchToProps = (dispatch) => {
 
     addNewRecipe: () => {
     	dispatch(addNewRecipe())
-    }
+    },
+
+    editRecipe: (ID) => {
+    	dispatch(editRecipe(ID))
+    },
+
+    deleteRecipe: (ID) => {
+    	dispatch(deleteRecipe(ID))
+    },
   }
 }
 

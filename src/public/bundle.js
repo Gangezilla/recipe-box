@@ -63,7 +63,7 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _index = __webpack_require__(/*! ./reducers/index.jsx */ 457);
+	var _index = __webpack_require__(/*! ./reducers/index.jsx */ 235);
 	
 	var _index2 = _interopRequireDefault(_index);
 	
@@ -71,9 +71,9 @@
 	
 	var store = (0, _redux.createStore)(_index2.default);
 	
-	// store.subscribe(() =>
-	// 	console.log('index: ',store.getState())
-	// )
+	store.subscribe(function () {
+		return console.log('index: ', store.getState());
+	});
 	
 	(0, _reactDom.render)(_react2.default.createElement(
 		_reactRedux.Provider,
@@ -25058,7 +25058,7 @@
 	
 	var _recipeIndexComponent2 = _interopRequireDefault(_recipeIndexComponent);
 	
-	var _recipeIndexActions = __webpack_require__(/*! ../actions/recipeIndex-actions.jsx */ 456);
+	var _recipeIndexActions = __webpack_require__(/*! ../actions/recipeIndex-actions.jsx */ 234);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -25074,7 +25074,6 @@
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 	  return {
-	
 	    openRecipeModal: function openRecipeModal() {
 	      dispatch((0, _recipeIndexActions.openRecipeModal)());
 	    },
@@ -25085,6 +25084,14 @@
 	
 	    addNewRecipe: function addNewRecipe() {
 	      dispatch((0, _recipeIndexActions.addNewRecipe)());
+	    },
+	
+	    editRecipe: function editRecipe(ID) {
+	      dispatch((0, _recipeIndexActions.editRecipe)(ID));
+	    },
+	
+	    deleteRecipe: function deleteRecipe(ID) {
+	      dispatch((0, _recipeIndexActions.deleteRecipe)(ID));
 	    }
 	  };
 	};
@@ -25114,13 +25121,13 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _reactModal = __webpack_require__(/*! react-modal */ 234);
+	var _reactModal = __webpack_require__(/*! react-modal */ 447);
 	
 	var _reactModal2 = _interopRequireDefault(_reactModal);
 	
-	var _reduxForm = __webpack_require__(/*! redux-form */ 244);
+	var _reduxForm = __webpack_require__(/*! redux-form */ 236);
 	
-	var _addRecipeFormContainer = __webpack_require__(/*! ../containers/addRecipeForm-container.jsx */ 454);
+	var _addRecipeFormContainer = __webpack_require__(/*! ../containers/addRecipeForm-container.jsx */ 457);
 	
 	var _addRecipeFormContainer2 = _interopRequireDefault(_addRecipeFormContainer);
 	
@@ -25134,9 +25141,12 @@
 		    isAddRecipeOpen = _ref.isAddRecipeOpen,
 		    headerMessage = _ref.headerMessage,
 		    addNewRecipe = _ref.addNewRecipe,
-		    Recipes = _ref.Recipes;
+		    Recipes = _ref.Recipes,
+		    editRecipe = _ref.editRecipe,
+		    deleteRecipe = _ref.deleteRecipe;
 	
-		console.log(Recipes);
+		//ternary statement for if we don't have any recipes.
+		console.log('component:', Recipes);
 		return _react2.default.createElement(
 			'div',
 			null,
@@ -25146,25 +25156,50 @@
 				' working real well! '
 			),
 			_react2.default.createElement(
-				'p',
-				null,
-				'Need to have a ul in here that will map through our recipes '
+				'span',
+				{ className: Recipes.length == 0 ? 'norecipes-message' : 'is-hidden' },
+				' Why don\'t you try adding something here? '
 			),
 			_react2.default.createElement(
-				'ul',
-				null,
-				_react2.default.createElement(
-					'li',
-					null,
-					' Test '
-				),
+				'div',
+				{ className: Recipes !== [] ? 'recipe-container' : 'is-hidden' },
 				Recipes.map(function (recipe) {
 					return _react2.default.createElement(
-						'li',
-						null,
-						' ',
-						recipe.RecipeName,
-						' '
+						'div',
+						{ className: 'recipe-box' },
+						_react2.default.createElement(
+							'span',
+							{ className: 'recipe-name',
+								key: recipe.RecipeName },
+							recipe.RecipeName,
+							' - ',
+							recipe.ID
+						),
+						_react2.default.createElement(
+							'span',
+							{ className: 'recipe-description',
+								key: recipe.RecipeDescription },
+							recipe.RecipeDescription
+						),
+						_react2.default.createElement(
+							'span',
+							null,
+							' Need to make a function to loop through ingredients... and display them '
+						),
+						_react2.default.createElement(
+							'button',
+							{ onClick: function onClick() {
+									return deleteRecipe(recipe.ID);
+								} },
+							' Delete '
+						),
+						_react2.default.createElement(
+							'button',
+							{ onClick: function onClick() {
+									return editRecipe(recipe.ID);
+								} },
+							' Edit '
+						)
 					);
 				}.bind(undefined))
 			),
@@ -25185,7 +25220,7 @@
 				{
 					isOpen: isAddRecipeOpen,
 					style: '',
-					contentLabel: 'Add New Recipe'
+					contentLabel: 'Recipe Setup'
 				},
 				_react2.default.createElement(
 					'h1',
@@ -25209,1365 +25244,90 @@
 	// 	isAddRecipeOpen: PropTypes.boolean,
 	// }
 	
-	//import RecipeForm from './addRecipeForm-component.jsx'
 	exports.default = RecipeIndex;
 
 /***/ },
 /* 234 */
-/*!************************************!*\
-  !*** ./~/react-modal/lib/index.js ***!
-  \************************************/
-/***/ function(module, exports, __webpack_require__) {
+/*!*************************************************!*\
+  !*** ./src/app/actions/recipeIndex-actions.jsx ***!
+  \*************************************************/
+/***/ function(module, exports) {
 
-	module.exports = __webpack_require__(/*! ./components/Modal */ 235);
+	'use strict';
 	
-
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var openRecipeModal = exports.openRecipeModal = function openRecipeModal() {
+		return {
+			type: 'OPEN_MODAL',
+			isAddRecipeOpen: true,
+			headerMessage: "Adding a new recipe!"
+		};
+	};
+	
+	var closeRecipeModal = exports.closeRecipeModal = function closeRecipeModal() {
+		return {
+			type: 'CLOSE_MODAL',
+			isAddRecipeOpen: false
+		};
+	};
+	
+	//add it to the object at a new index? do we need to do that? or just add it to the bottom of an object?
+	var addNewRecipe = exports.addNewRecipe = function addNewRecipe(fields) {
+		console.log(fields);
+		return {
+			type: 'CREATE_RECIPE',
+			recipeInfo: fields
+		};
+	};
+	
+	var deleteRecipe = exports.deleteRecipe = function deleteRecipe(ID) {
+		return {
+			type: 'DELETE_RECIPE',
+			ID: ID
+		};
+	};
+	
+	var editRecipe = exports.editRecipe = function editRecipe(ID) {
+		return {
+			type: 'EDIT_RECIPE',
+			ID: ID
+		};
+	};
 
 /***/ },
 /* 235 */
-/*!***********************************************!*\
-  !*** ./~/react-modal/lib/components/Modal.js ***!
-  \***********************************************/
+/*!************************************!*\
+  !*** ./src/app/reducers/index.jsx ***!
+  \************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {var React = __webpack_require__(/*! react */ 1);
-	var ReactDOM = __webpack_require__(/*! react-dom */ 32);
-	var ExecutionEnvironment = __webpack_require__(/*! exenv */ 236);
-	var ModalPortal = React.createFactory(__webpack_require__(/*! ./ModalPortal */ 237));
-	var ariaAppHider = __webpack_require__(/*! ../helpers/ariaAppHider */ 242);
-	var elementClass = __webpack_require__(/*! element-class */ 243);
-	var renderSubtreeIntoContainer = __webpack_require__(/*! react-dom */ 32).unstable_renderSubtreeIntoContainer;
-	var Assign = __webpack_require__(/*! lodash.assign */ 241);
+	'use strict';
 	
-	var SafeHTMLElement = ExecutionEnvironment.canUseDOM ? window.HTMLElement : {};
-	var AppElement = ExecutionEnvironment.canUseDOM ? document.body : {appendChild: function() {}};
-	
-	function getParentElement(parentSelector) {
-	  return parentSelector();
-	}
-	
-	var Modal = React.createClass({
-	
-	  displayName: 'Modal',
-	  statics: {
-	    setAppElement: function(element) {
-	        AppElement = ariaAppHider.setElement(element);
-	    },
-	    injectCSS: function() {
-	      "production" !== process.env.NODE_ENV
-	        && console.warn('React-Modal: injectCSS has been deprecated ' +
-	                        'and no longer has any effect. It will be removed in a later version');
-	    }
-	  },
-	
-	  propTypes: {
-	    isOpen: React.PropTypes.bool.isRequired,
-	    style: React.PropTypes.shape({
-	      content: React.PropTypes.object,
-	      overlay: React.PropTypes.object
-	    }),
-	    portalClassName: React.PropTypes.string,
-	    appElement: React.PropTypes.instanceOf(SafeHTMLElement),
-	    onAfterOpen: React.PropTypes.func,
-	    onRequestClose: React.PropTypes.func,
-	    closeTimeoutMS: React.PropTypes.number,
-	    ariaHideApp: React.PropTypes.bool,
-	    shouldCloseOnOverlayClick: React.PropTypes.bool,
-	    parentSelector: React.PropTypes.func,
-	    role: React.PropTypes.string,
-	    contentLabel: React.PropTypes.string.isRequired
-	  },
-	
-	  getDefaultProps: function () {
-	    return {
-	      isOpen: false,
-	      portalClassName: 'ReactModalPortal',
-	      ariaHideApp: true,
-	      closeTimeoutMS: 0,
-	      shouldCloseOnOverlayClick: true,
-	      parentSelector: function () { return document.body; }
-	    };
-	  },
-	
-	  componentDidMount: function() {
-	    this.node = document.createElement('div');
-	    this.node.className = this.props.portalClassName;
-	
-	    var parent = getParentElement(this.props.parentSelector);
-	    parent.appendChild(this.node);
-	    this.renderPortal(this.props);
-	  },
-	
-	  componentWillReceiveProps: function(newProps) {
-	    var currentParent = getParentElement(this.props.parentSelector);
-	    var newParent = getParentElement(newProps.parentSelector);
-	
-	    if(newParent !== currentParent) {
-	      currentParent.removeChild(this.node);
-	      newParent.appendChild(this.node);
-	    }
-	
-	    this.renderPortal(newProps);
-	  },
-	
-	  componentWillUnmount: function() {
-	    if (this.props.ariaHideApp) {
-	      ariaAppHider.show(this.props.appElement);
-	    }
-	
-	    ReactDOM.unmountComponentAtNode(this.node);
-	    var parent = getParentElement(this.props.parentSelector);
-	    parent.removeChild(this.node);
-	    elementClass(document.body).remove('ReactModal__Body--open');
-	  },
-	
-	  renderPortal: function(props) {
-	    if (props.isOpen) {
-	      elementClass(document.body).add('ReactModal__Body--open');
-	    } else {
-	      elementClass(document.body).remove('ReactModal__Body--open');
-	    }
-	
-	    if (props.ariaHideApp) {
-	      ariaAppHider.toggle(props.isOpen, props.appElement);
-	    }
-	
-	    this.portal = renderSubtreeIntoContainer(this, ModalPortal(Assign({}, props, {defaultStyles: Modal.defaultStyles})), this.node);
-	  },
-	
-	  render: function () {
-	    return React.DOM.noscript();
-	  }
+	Object.defineProperty(exports, "__esModule", {
+		value: true
 	});
 	
-	Modal.defaultStyles = {
-	  overlay: {
-	    position        : 'fixed',
-	    top             : 0,
-	    left            : 0,
-	    right           : 0,
-	    bottom          : 0,
-	    backgroundColor : 'rgba(255, 255, 255, 0.75)'
-	  },
-	  content: {
-	    position                : 'absolute',
-	    top                     : '40px',
-	    left                    : '40px',
-	    right                   : '40px',
-	    bottom                  : '40px',
-	    border                  : '1px solid #ccc',
-	    background              : '#fff',
-	    overflow                : 'auto',
-	    WebkitOverflowScrolling : 'touch',
-	    borderRadius            : '4px',
-	    outline                 : 'none',
-	    padding                 : '20px'
-	  }
-	}
+	var _redux = __webpack_require__(/*! redux */ 194);
 	
-	module.exports = Modal
+	var _reduxForm = __webpack_require__(/*! redux-form */ 236);
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../webpack/~/node-libs-browser/~/process/browser.js */ 3)))
+	var _recipeReducers = __webpack_require__(/*! ./recipe-reducers.jsx */ 446);
+	
+	var _recipeReducers2 = _interopRequireDefault(_recipeReducers);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var rootReducer = (0, _redux.combineReducers)({
+		recipeReducer: _recipeReducers2.default,
+		form: _reduxForm.reducer
+	});
+	
+	exports.default = rootReducer;
 
 /***/ },
 /* 236 */
-/*!****************************************!*\
-  !*** ./~/react-modal/~/exenv/index.js ***!
-  \****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2015 Jed Watson.
-	  Based on code that is Copyright 2013-2015, Facebook, Inc.
-	  All rights reserved.
-	*/
-	
-	(function () {
-		'use strict';
-	
-		var canUseDOM = !!(
-			typeof window !== 'undefined' &&
-			window.document &&
-			window.document.createElement
-		);
-	
-		var ExecutionEnvironment = {
-	
-			canUseDOM: canUseDOM,
-	
-			canUseWorkers: typeof Worker !== 'undefined',
-	
-			canUseEventListeners:
-				canUseDOM && !!(window.addEventListener || window.attachEvent),
-	
-			canUseViewport: canUseDOM && !!window.screen
-	
-		};
-	
-		if (true) {
-			!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-				return ExecutionEnvironment;
-			}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		} else if (typeof module !== 'undefined' && module.exports) {
-			module.exports = ExecutionEnvironment;
-		} else {
-			window.ExecutionEnvironment = ExecutionEnvironment;
-		}
-	
-	}());
-
-
-/***/ },
-/* 237 */
-/*!*****************************************************!*\
-  !*** ./~/react-modal/lib/components/ModalPortal.js ***!
-  \*****************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(/*! react */ 1);
-	var div = React.DOM.div;
-	var focusManager = __webpack_require__(/*! ../helpers/focusManager */ 238);
-	var scopeTab = __webpack_require__(/*! ../helpers/scopeTab */ 240);
-	var Assign = __webpack_require__(/*! lodash.assign */ 241);
-	
-	// so that our CSS is statically analyzable
-	var CLASS_NAMES = {
-	  overlay: {
-	    base: 'ReactModal__Overlay',
-	    afterOpen: 'ReactModal__Overlay--after-open',
-	    beforeClose: 'ReactModal__Overlay--before-close'
-	  },
-	  content: {
-	    base: 'ReactModal__Content',
-	    afterOpen: 'ReactModal__Content--after-open',
-	    beforeClose: 'ReactModal__Content--before-close'
-	  }
-	};
-	
-	var ModalPortal = module.exports = React.createClass({
-	
-	  displayName: 'ModalPortal',
-	  shouldClose: null,
-	
-	  getDefaultProps: function() {
-	    return {
-	      style: {
-	        overlay: {},
-	        content: {}
-	      }
-	    };
-	  },
-	
-	  getInitialState: function() {
-	    return {
-	      afterOpen: false,
-	      beforeClose: false
-	    };
-	  },
-	
-	  componentDidMount: function() {
-	    // Focus needs to be set when mounting and already open
-	    if (this.props.isOpen) {
-	      this.setFocusAfterRender(true);
-	      this.open();
-	    }
-	  },
-	
-	  componentWillUnmount: function() {
-	    clearTimeout(this.closeTimer);
-	  },
-	
-	  componentWillReceiveProps: function(newProps) {
-	    // Focus only needs to be set once when the modal is being opened
-	    if (!this.props.isOpen && newProps.isOpen) {
-	      this.setFocusAfterRender(true);
-	      this.open();
-	    } else if (this.props.isOpen && !newProps.isOpen) {
-	      this.close();
-	    }
-	  },
-	
-	  componentDidUpdate: function () {
-	    if (this.focusAfterRender) {
-	      this.focusContent();
-	      this.setFocusAfterRender(false);
-	    }
-	  },
-	
-	  setFocusAfterRender: function (focus) {
-	    this.focusAfterRender = focus;
-	  },
-	
-	  open: function() {
-	    if (this.state.afterOpen && this.state.beforeClose) {
-	      clearTimeout(this.closeTimer);
-	      this.setState({ beforeClose: false });
-	    } else {
-	      focusManager.setupScopedFocus(this.node);
-	      focusManager.markForFocusLater();
-	      this.setState({isOpen: true}, function() {
-	        this.setState({afterOpen: true});
-	
-	        if (this.props.isOpen && this.props.onAfterOpen) {
-	          this.props.onAfterOpen();
-	        }
-	      }.bind(this));
-	    }
-	  },
-	
-	  close: function() {
-	    if (this.props.closeTimeoutMS > 0)
-	      this.closeWithTimeout();
-	    else
-	      this.closeWithoutTimeout();
-	  },
-	
-	  focusContent: function() {
-	    // Don't steal focus from inner elements
-	    if (!this.contentHasFocus()) {
-	      this.refs.content.focus();
-	    }
-	  },
-	
-	  closeWithTimeout: function() {
-	    this.setState({beforeClose: true}, function() {
-	      this.closeTimer = setTimeout(this.closeWithoutTimeout, this.props.closeTimeoutMS);
-	    }.bind(this));
-	  },
-	
-	  closeWithoutTimeout: function() {
-	    this.setState({
-	      beforeClose: false,
-	      isOpen: false,
-	      afterOpen: false,
-	    }, this.afterClose);
-	  },
-	
-	  afterClose: function() {
-	    focusManager.returnFocus();
-	    focusManager.teardownScopedFocus();
-	  },
-	
-	  handleKeyDown: function(event) {
-	    if (event.keyCode == 9 /*tab*/) scopeTab(this.refs.content, event);
-	    if (event.keyCode == 27 /*esc*/) {
-	      event.preventDefault();
-	      this.requestClose(event);
-	    }
-	  },
-	
-	  handleOverlayMouseDown: function(event) {
-	    if (this.shouldClose === null) {
-	      this.shouldClose = true;
-	    }
-	  },
-	
-	  handleOverlayMouseUp: function(event) {
-	    if (this.shouldClose && this.props.shouldCloseOnOverlayClick) {
-	      if (this.ownerHandlesClose())
-	        this.requestClose(event);
-	      else
-	        this.focusContent();
-	    }
-	    this.shouldClose = null;
-	  },
-	
-	  handleContentMouseDown: function(event) {
-	    this.shouldClose = false;
-	  },
-	
-	  handleContentMouseUp: function(event) {
-	    this.shouldClose = false;
-	  },
-	
-	  requestClose: function(event) {
-	    if (this.ownerHandlesClose())
-	      this.props.onRequestClose(event);
-	  },
-	
-	  ownerHandlesClose: function() {
-	    return this.props.onRequestClose;
-	  },
-	
-	  shouldBeClosed: function() {
-	    return !this.props.isOpen && !this.state.beforeClose;
-	  },
-	
-	  contentHasFocus: function() {
-	    return document.activeElement === this.refs.content || this.refs.content.contains(document.activeElement);
-	  },
-	
-	  buildClassName: function(which, additional) {
-	    var className = CLASS_NAMES[which].base;
-	    if (this.state.afterOpen)
-	      className += ' '+CLASS_NAMES[which].afterOpen;
-	    if (this.state.beforeClose)
-	      className += ' '+CLASS_NAMES[which].beforeClose;
-	    return additional ? className + ' ' + additional : className;
-	  },
-	
-	  render: function() {
-	    var contentStyles = (this.props.className) ? {} : this.props.defaultStyles.content;
-	    var overlayStyles = (this.props.overlayClassName) ? {} : this.props.defaultStyles.overlay;
-	
-	    return this.shouldBeClosed() ? div() : (
-	      div({
-	        ref: "overlay",
-	        className: this.buildClassName('overlay', this.props.overlayClassName),
-	        style: Assign({}, overlayStyles, this.props.style.overlay || {}),
-	        onMouseDown: this.handleOverlayMouseDown,
-	        onMouseUp: this.handleOverlayMouseUp
-	      },
-	        div({
-	          ref: "content",
-	          style: Assign({}, contentStyles, this.props.style.content || {}),
-	          className: this.buildClassName('content', this.props.className),
-	          tabIndex: "-1",
-	          onKeyDown: this.handleKeyDown,
-	          onMouseDown: this.handleContentMouseDown,
-	          onMouseUp: this.handleContentMouseUp,
-	          role: this.props.role,
-	          "aria-label": this.props.contentLabel
-	        },
-	          this.props.children
-	        )
-	      )
-	    );
-	  }
-	});
-
-
-/***/ },
-/* 238 */
-/*!***************************************************!*\
-  !*** ./~/react-modal/lib/helpers/focusManager.js ***!
-  \***************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	var findTabbable = __webpack_require__(/*! ../helpers/tabbable */ 239);
-	var modalElement = null;
-	var focusLaterElement = null;
-	var needToFocus = false;
-	
-	function handleBlur(event) {
-	  needToFocus = true;
-	}
-	
-	function handleFocus(event) {
-	  if (needToFocus) {
-	    needToFocus = false;
-	    if (!modalElement) {
-	      return;
-	    }
-	    // need to see how jQuery shims document.on('focusin') so we don't need the
-	    // setTimeout, firefox doesn't support focusin, if it did, we could focus
-	    // the element outside of a setTimeout. Side-effect of this implementation 
-	    // is that the document.body gets focus, and then we focus our element right 
-	    // after, seems fine.
-	    setTimeout(function() {
-	      if (modalElement.contains(document.activeElement))
-	        return;
-	      var el = (findTabbable(modalElement)[0] || modalElement);
-	      el.focus();
-	    }, 0);
-	  }
-	}
-	
-	exports.markForFocusLater = function() {
-	  focusLaterElement = document.activeElement;
-	};
-	
-	exports.returnFocus = function() {
-	  try {
-	    focusLaterElement.focus();
-	  }
-	  catch (e) {
-	    console.warn('You tried to return focus to '+focusLaterElement+' but it is not in the DOM anymore');
-	  }
-	  focusLaterElement = null;
-	};
-	
-	exports.setupScopedFocus = function(element) {
-	  modalElement = element;
-	
-	  if (window.addEventListener) {
-	    window.addEventListener('blur', handleBlur, false);
-	    document.addEventListener('focus', handleFocus, true);
-	  } else {
-	    window.attachEvent('onBlur', handleBlur);
-	    document.attachEvent('onFocus', handleFocus);
-	  }
-	};
-	
-	exports.teardownScopedFocus = function() {
-	  modalElement = null;
-	
-	  if (window.addEventListener) {
-	    window.removeEventListener('blur', handleBlur);
-	    document.removeEventListener('focus', handleFocus);
-	  } else {
-	    window.detachEvent('onBlur', handleBlur);
-	    document.detachEvent('onFocus', handleFocus);
-	  }
-	};
-	
-	
-
-
-/***/ },
-/* 239 */
-/*!***********************************************!*\
-  !*** ./~/react-modal/lib/helpers/tabbable.js ***!
-  \***********************************************/
-/***/ function(module, exports) {
-
-	/*!
-	 * Adapted from jQuery UI core
-	 *
-	 * http://jqueryui.com
-	 *
-	 * Copyright 2014 jQuery Foundation and other contributors
-	 * Released under the MIT license.
-	 * http://jquery.org/license
-	 *
-	 * http://api.jqueryui.com/category/ui-core/
-	 */
-	
-	function focusable(element, isTabIndexNotNaN) {
-	  var nodeName = element.nodeName.toLowerCase();
-	  return (/input|select|textarea|button|object/.test(nodeName) ?
-	    !element.disabled :
-	    "a" === nodeName ?
-	      element.href || isTabIndexNotNaN :
-	      isTabIndexNotNaN) && visible(element);
-	}
-	
-	function hidden(el) {
-	  return (el.offsetWidth <= 0 && el.offsetHeight <= 0) ||
-	    el.style.display === 'none';
-	}
-	
-	function visible(element) {
-	  while (element) {
-	    if (element === document.body) break;
-	    if (hidden(element)) return false;
-	    element = element.parentNode;
-	  }
-	  return true;
-	}
-	
-	function tabbable(element) {
-	  var tabIndex = element.getAttribute('tabindex');
-	  if (tabIndex === null) tabIndex = undefined;
-	  var isTabIndexNaN = isNaN(tabIndex);
-	  return (isTabIndexNaN || tabIndex >= 0) && focusable(element, !isTabIndexNaN);
-	}
-	
-	function findTabbableDescendants(element) {
-	  return [].slice.call(element.querySelectorAll('*'), 0).filter(function(el) {
-	    return tabbable(el);
-	  });
-	}
-	
-	module.exports = findTabbableDescendants;
-	
-
-
-/***/ },
-/* 240 */
-/*!***********************************************!*\
-  !*** ./~/react-modal/lib/helpers/scopeTab.js ***!
-  \***********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	var findTabbable = __webpack_require__(/*! ../helpers/tabbable */ 239);
-	
-	module.exports = function(node, event) {
-	  var tabbable = findTabbable(node);
-	  if (!tabbable.length) {
-	      event.preventDefault();
-	      return;
-	  }
-	  var finalTabbable = tabbable[event.shiftKey ? 0 : tabbable.length - 1];
-	  var leavingFinalTabbable = (
-	    finalTabbable === document.activeElement ||
-	    // handle immediate shift+tab after opening with mouse
-	    node === document.activeElement
-	  );
-	  if (!leavingFinalTabbable) return;
-	  event.preventDefault();
-	  var target = tabbable[event.shiftKey ? tabbable.length - 1 : 0];
-	  target.focus();
-	};
-
-
-/***/ },
-/* 241 */
-/*!************************************************!*\
-  !*** ./~/react-modal/~/lodash.assign/index.js ***!
-  \************************************************/
-/***/ function(module, exports) {
-
-	/**
-	 * lodash (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modularize exports="npm" -o ./`
-	 * Copyright jQuery Foundation and other contributors <https://jquery.org/>
-	 * Released under MIT license <https://lodash.com/license>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 */
-	
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-	
-	/** `Object#toString` result references. */
-	var argsTag = '[object Arguments]',
-	    funcTag = '[object Function]',
-	    genTag = '[object GeneratorFunction]';
-	
-	/** Used to detect unsigned integer values. */
-	var reIsUint = /^(?:0|[1-9]\d*)$/;
-	
-	/**
-	 * A faster alternative to `Function#apply`, this function invokes `func`
-	 * with the `this` binding of `thisArg` and the arguments of `args`.
-	 *
-	 * @private
-	 * @param {Function} func The function to invoke.
-	 * @param {*} thisArg The `this` binding of `func`.
-	 * @param {Array} args The arguments to invoke `func` with.
-	 * @returns {*} Returns the result of `func`.
-	 */
-	function apply(func, thisArg, args) {
-	  switch (args.length) {
-	    case 0: return func.call(thisArg);
-	    case 1: return func.call(thisArg, args[0]);
-	    case 2: return func.call(thisArg, args[0], args[1]);
-	    case 3: return func.call(thisArg, args[0], args[1], args[2]);
-	  }
-	  return func.apply(thisArg, args);
-	}
-	
-	/**
-	 * The base implementation of `_.times` without support for iteratee shorthands
-	 * or max array length checks.
-	 *
-	 * @private
-	 * @param {number} n The number of times to invoke `iteratee`.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the array of results.
-	 */
-	function baseTimes(n, iteratee) {
-	  var index = -1,
-	      result = Array(n);
-	
-	  while (++index < n) {
-	    result[index] = iteratee(index);
-	  }
-	  return result;
-	}
-	
-	/**
-	 * Creates a unary function that invokes `func` with its argument transformed.
-	 *
-	 * @private
-	 * @param {Function} func The function to wrap.
-	 * @param {Function} transform The argument transform.
-	 * @returns {Function} Returns the new function.
-	 */
-	function overArg(func, transform) {
-	  return function(arg) {
-	    return func(transform(arg));
-	  };
-	}
-	
-	/** Used for built-in method references. */
-	var objectProto = Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/**
-	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objectToString = objectProto.toString;
-	
-	/** Built-in value references. */
-	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-	
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeKeys = overArg(Object.keys, Object),
-	    nativeMax = Math.max;
-	
-	/** Detect if properties shadowing those on `Object.prototype` are non-enumerable. */
-	var nonEnumShadows = !propertyIsEnumerable.call({ 'valueOf': 1 }, 'valueOf');
-	
-	/**
-	 * Creates an array of the enumerable property names of the array-like `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @param {boolean} inherited Specify returning inherited property names.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function arrayLikeKeys(value, inherited) {
-	  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
-	  // Safari 9 makes `arguments.length` enumerable in strict mode.
-	  var result = (isArray(value) || isArguments(value))
-	    ? baseTimes(value.length, String)
-	    : [];
-	
-	  var length = result.length,
-	      skipIndexes = !!length;
-	
-	  for (var key in value) {
-	    if ((inherited || hasOwnProperty.call(value, key)) &&
-	        !(skipIndexes && (key == 'length' || isIndex(key, length)))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-	
-	/**
-	 * Assigns `value` to `key` of `object` if the existing value is not equivalent
-	 * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
-	 * for equality comparisons.
-	 *
-	 * @private
-	 * @param {Object} object The object to modify.
-	 * @param {string} key The key of the property to assign.
-	 * @param {*} value The value to assign.
-	 */
-	function assignValue(object, key, value) {
-	  var objValue = object[key];
-	  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
-	      (value === undefined && !(key in object))) {
-	    object[key] = value;
-	  }
-	}
-	
-	/**
-	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function baseKeys(object) {
-	  if (!isPrototype(object)) {
-	    return nativeKeys(object);
-	  }
-	  var result = [];
-	  for (var key in Object(object)) {
-	    if (hasOwnProperty.call(object, key) && key != 'constructor') {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-	
-	/**
-	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
-	 *
-	 * @private
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseRest(func, start) {
-	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-	  return function() {
-	    var args = arguments,
-	        index = -1,
-	        length = nativeMax(args.length - start, 0),
-	        array = Array(length);
-	
-	    while (++index < length) {
-	      array[index] = args[start + index];
-	    }
-	    index = -1;
-	    var otherArgs = Array(start + 1);
-	    while (++index < start) {
-	      otherArgs[index] = args[index];
-	    }
-	    otherArgs[start] = array;
-	    return apply(func, this, otherArgs);
-	  };
-	}
-	
-	/**
-	 * Copies properties of `source` to `object`.
-	 *
-	 * @private
-	 * @param {Object} source The object to copy properties from.
-	 * @param {Array} props The property identifiers to copy.
-	 * @param {Object} [object={}] The object to copy properties to.
-	 * @param {Function} [customizer] The function to customize copied values.
-	 * @returns {Object} Returns `object`.
-	 */
-	function copyObject(source, props, object, customizer) {
-	  object || (object = {});
-	
-	  var index = -1,
-	      length = props.length;
-	
-	  while (++index < length) {
-	    var key = props[index];
-	
-	    var newValue = customizer
-	      ? customizer(object[key], source[key], key, object, source)
-	      : undefined;
-	
-	    assignValue(object, key, newValue === undefined ? source[key] : newValue);
-	  }
-	  return object;
-	}
-	
-	/**
-	 * Creates a function like `_.assign`.
-	 *
-	 * @private
-	 * @param {Function} assigner The function to assign values.
-	 * @returns {Function} Returns the new assigner function.
-	 */
-	function createAssigner(assigner) {
-	  return baseRest(function(object, sources) {
-	    var index = -1,
-	        length = sources.length,
-	        customizer = length > 1 ? sources[length - 1] : undefined,
-	        guard = length > 2 ? sources[2] : undefined;
-	
-	    customizer = (assigner.length > 3 && typeof customizer == 'function')
-	      ? (length--, customizer)
-	      : undefined;
-	
-	    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-	      customizer = length < 3 ? undefined : customizer;
-	      length = 1;
-	    }
-	    object = Object(object);
-	    while (++index < length) {
-	      var source = sources[index];
-	      if (source) {
-	        assigner(object, source, index, customizer);
-	      }
-	    }
-	    return object;
-	  });
-	}
-	
-	/**
-	 * Checks if `value` is a valid array-like index.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-	 */
-	function isIndex(value, length) {
-	  length = length == null ? MAX_SAFE_INTEGER : length;
-	  return !!length &&
-	    (typeof value == 'number' || reIsUint.test(value)) &&
-	    (value > -1 && value % 1 == 0 && value < length);
-	}
-	
-	/**
-	 * Checks if the given arguments are from an iteratee call.
-	 *
-	 * @private
-	 * @param {*} value The potential iteratee value argument.
-	 * @param {*} index The potential iteratee index or key argument.
-	 * @param {*} object The potential iteratee object argument.
-	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
-	 *  else `false`.
-	 */
-	function isIterateeCall(value, index, object) {
-	  if (!isObject(object)) {
-	    return false;
-	  }
-	  var type = typeof index;
-	  if (type == 'number'
-	        ? (isArrayLike(object) && isIndex(index, object.length))
-	        : (type == 'string' && index in object)
-	      ) {
-	    return eq(object[index], value);
-	  }
-	  return false;
-	}
-	
-	/**
-	 * Checks if `value` is likely a prototype object.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
-	 */
-	function isPrototype(value) {
-	  var Ctor = value && value.constructor,
-	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
-	
-	  return value === proto;
-	}
-	
-	/**
-	 * Performs a
-	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
-	 * comparison between two values to determine if they are equivalent.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 * @example
-	 *
-	 * var object = { 'a': 1 };
-	 * var other = { 'a': 1 };
-	 *
-	 * _.eq(object, object);
-	 * // => true
-	 *
-	 * _.eq(object, other);
-	 * // => false
-	 *
-	 * _.eq('a', 'a');
-	 * // => true
-	 *
-	 * _.eq('a', Object('a'));
-	 * // => false
-	 *
-	 * _.eq(NaN, NaN);
-	 * // => true
-	 */
-	function eq(value, other) {
-	  return value === other || (value !== value && other !== other);
-	}
-	
-	/**
-	 * Checks if `value` is likely an `arguments` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-	 *  else `false`.
-	 * @example
-	 *
-	 * _.isArguments(function() { return arguments; }());
-	 * // => true
-	 *
-	 * _.isArguments([1, 2, 3]);
-	 * // => false
-	 */
-	function isArguments(value) {
-	  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
-	  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
-	    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
-	}
-	
-	/**
-	 * Checks if `value` is classified as an `Array` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
-	 * @example
-	 *
-	 * _.isArray([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArray(document.body.children);
-	 * // => false
-	 *
-	 * _.isArray('abc');
-	 * // => false
-	 *
-	 * _.isArray(_.noop);
-	 * // => false
-	 */
-	var isArray = Array.isArray;
-	
-	/**
-	 * Checks if `value` is array-like. A value is considered array-like if it's
-	 * not a function and has a `value.length` that's an integer greater than or
-	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-	 * @example
-	 *
-	 * _.isArrayLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArrayLike(document.body.children);
-	 * // => true
-	 *
-	 * _.isArrayLike('abc');
-	 * // => true
-	 *
-	 * _.isArrayLike(_.noop);
-	 * // => false
-	 */
-	function isArrayLike(value) {
-	  return value != null && isLength(value.length) && !isFunction(value);
-	}
-	
-	/**
-	 * This method is like `_.isArrayLike` except that it also checks if `value`
-	 * is an object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an array-like object,
-	 *  else `false`.
-	 * @example
-	 *
-	 * _.isArrayLikeObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArrayLikeObject(document.body.children);
-	 * // => true
-	 *
-	 * _.isArrayLikeObject('abc');
-	 * // => false
-	 *
-	 * _.isArrayLikeObject(_.noop);
-	 * // => false
-	 */
-	function isArrayLikeObject(value) {
-	  return isObjectLike(value) && isArrayLike(value);
-	}
-	
-	/**
-	 * Checks if `value` is classified as a `Function` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
-	 * @example
-	 *
-	 * _.isFunction(_);
-	 * // => true
-	 *
-	 * _.isFunction(/abc/);
-	 * // => false
-	 */
-	function isFunction(value) {
-	  // The use of `Object#toString` avoids issues with the `typeof` operator
-	  // in Safari 8-9 which returns 'object' for typed array and other constructors.
-	  var tag = isObject(value) ? objectToString.call(value) : '';
-	  return tag == funcTag || tag == genTag;
-	}
-	
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This method is loosely based on
-	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 * @example
-	 *
-	 * _.isLength(3);
-	 * // => true
-	 *
-	 * _.isLength(Number.MIN_VALUE);
-	 * // => false
-	 *
-	 * _.isLength(Infinity);
-	 * // => false
-	 *
-	 * _.isLength('3');
-	 * // => false
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' &&
-	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-	
-	/**
-	 * Checks if `value` is the
-	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
-	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(_.noop);
-	 * // => true
-	 *
-	 * _.isObject(null);
-	 * // => false
-	 */
-	function isObject(value) {
-	  var type = typeof value;
-	  return !!value && (type == 'object' || type == 'function');
-	}
-	
-	/**
-	 * Checks if `value` is object-like. A value is object-like if it's not `null`
-	 * and has a `typeof` result of "object".
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 * @example
-	 *
-	 * _.isObjectLike({});
-	 * // => true
-	 *
-	 * _.isObjectLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObjectLike(_.noop);
-	 * // => false
-	 *
-	 * _.isObjectLike(null);
-	 * // => false
-	 */
-	function isObjectLike(value) {
-	  return !!value && typeof value == 'object';
-	}
-	
-	/**
-	 * Assigns own enumerable string keyed properties of source objects to the
-	 * destination object. Source objects are applied from left to right.
-	 * Subsequent sources overwrite property assignments of previous sources.
-	 *
-	 * **Note:** This method mutates `object` and is loosely based on
-	 * [`Object.assign`](https://mdn.io/Object/assign).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.10.0
-	 * @category Object
-	 * @param {Object} object The destination object.
-	 * @param {...Object} [sources] The source objects.
-	 * @returns {Object} Returns `object`.
-	 * @see _.assignIn
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 * }
-	 *
-	 * function Bar() {
-	 *   this.c = 3;
-	 * }
-	 *
-	 * Foo.prototype.b = 2;
-	 * Bar.prototype.d = 4;
-	 *
-	 * _.assign({ 'a': 0 }, new Foo, new Bar);
-	 * // => { 'a': 1, 'c': 3 }
-	 */
-	var assign = createAssigner(function(object, source) {
-	  if (nonEnumShadows || isPrototype(source) || isArrayLike(source)) {
-	    copyObject(source, keys(source), object);
-	    return;
-	  }
-	  for (var key in source) {
-	    if (hasOwnProperty.call(source, key)) {
-	      assignValue(object, key, source[key]);
-	    }
-	  }
-	});
-	
-	/**
-	 * Creates an array of the own enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects. See the
-	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-	 * for more details.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keys(new Foo);
-	 * // => ['a', 'b'] (iteration order is not guaranteed)
-	 *
-	 * _.keys('hi');
-	 * // => ['0', '1']
-	 */
-	function keys(object) {
-	  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-	}
-	
-	module.exports = assign;
-
-
-/***/ },
-/* 242 */
-/*!***************************************************!*\
-  !*** ./~/react-modal/lib/helpers/ariaAppHider.js ***!
-  \***************************************************/
-/***/ function(module, exports) {
-
-	var _element = typeof document !== 'undefined' ? document.body : null;
-	
-	function setElement(element) {
-	  if (typeof element === 'string') {
-	    var el = document.querySelectorAll(element);
-	    element = 'length' in el ? el[0] : el;
-	  }
-	  _element = element || _element;
-	  return _element;
-	}
-	
-	function hide(appElement) {
-	  validateElement(appElement);
-	  (appElement || _element).setAttribute('aria-hidden', 'true');
-	}
-	
-	function show(appElement) {
-	  validateElement(appElement);
-	  (appElement || _element).removeAttribute('aria-hidden');
-	}
-	
-	function toggle(shouldHide, appElement) {
-	  if (shouldHide)
-	    hide(appElement);
-	  else
-	    show(appElement);
-	}
-	
-	function validateElement(appElement) {
-	  if (!appElement && !_element)
-	    throw new Error('react-modal: You must set an element with `Modal.setAppElement(el)` to make this accessible');
-	}
-	
-	function resetForTesting() {
-	  _element = document.body;
-	}
-	
-	exports.toggle = toggle;
-	exports.setElement = setElement;
-	exports.show = show;
-	exports.hide = hide;
-	exports.resetForTesting = resetForTesting;
-
-
-/***/ },
-/* 243 */
-/*!************************************************!*\
-  !*** ./~/react-modal/~/element-class/index.js ***!
-  \************************************************/
-/***/ function(module, exports) {
-
-	module.exports = function(opts) {
-	  return new ElementClass(opts)
-	}
-	
-	function indexOf(arr, prop) {
-	  if (arr.indexOf) return arr.indexOf(prop)
-	  for (var i = 0, len = arr.length; i < len; i++)
-	    if (arr[i] === prop) return i
-	  return -1
-	}
-	
-	function ElementClass(opts) {
-	  if (!(this instanceof ElementClass)) return new ElementClass(opts)
-	  var self = this
-	  if (!opts) opts = {}
-	
-	  // similar doing instanceof HTMLElement but works in IE8
-	  if (opts.nodeType) opts = {el: opts}
-	
-	  this.opts = opts
-	  this.el = opts.el || document.body
-	  if (typeof this.el !== 'object') this.el = document.querySelector(this.el)
-	}
-	
-	ElementClass.prototype.add = function(className) {
-	  var el = this.el
-	  if (!el) return
-	  if (el.className === "") return el.className = className
-	  var classes = el.className.split(' ')
-	  if (indexOf(classes, className) > -1) return classes
-	  classes.push(className)
-	  el.className = classes.join(' ')
-	  return classes
-	}
-	
-	ElementClass.prototype.remove = function(className) {
-	  var el = this.el
-	  if (!el) return
-	  if (el.className === "") return
-	  var classes = el.className.split(' ')
-	  var idx = indexOf(classes, className)
-	  if (idx > -1) classes.splice(idx, 1)
-	  el.className = classes.join(' ')
-	  return classes
-	}
-	
-	ElementClass.prototype.has = function(className) {
-	  var el = this.el
-	  if (!el) return
-	  var classes = el.className.split(' ')
-	  return indexOf(classes, className) > -1
-	}
-	
-	ElementClass.prototype.toggle = function(className) {
-	  var el = this.el
-	  if (!el) return
-	  if (this.has(className)) this.remove(className)
-	  else this.add(className)
-	}
-
-
-/***/ },
-/* 244 */
 /*!***********************************!*\
   !*** ./~/redux-form/lib/index.js ***!
   \***********************************/
@@ -26580,11 +25340,11 @@
 	});
 	exports.values = exports.untouch = exports.unregisterField = exports.touch = exports.SubmissionError = exports.submit = exports.stopSubmit = exports.stopAsyncValidation = exports.startSubmit = exports.startAsyncValidation = exports.setSubmitSucceeded = exports.setSubmitFailed = exports.reset = exports.registerField = exports.reduxForm = exports.reducer = exports.propTypes = exports.hasSubmitFailed = exports.hasSubmitSucceeded = exports.isSubmitting = exports.isValid = exports.isPristine = exports.isInvalid = exports.isDirty = exports.initialize = exports.getFormSubmitErrors = exports.getFormAsyncErrors = exports.getFormSyncErrors = exports.getFormInitialValues = exports.getFormValues = exports.formValueSelector = exports.focus = exports.FormSection = exports.Form = exports.FieldArray = exports.Fields = exports.Field = exports.destroy = exports.change = exports.blur = exports.autofill = exports.arrayUnshift = exports.arraySwap = exports.arraySplice = exports.arrayShift = exports.arrayRemoveAll = exports.arrayRemove = exports.arrayPush = exports.arrayPop = exports.arrayMove = exports.arrayInsert = exports.actionTypes = undefined;
 	
-	var _createAll2 = __webpack_require__(/*! ./createAll */ 245);
+	var _createAll2 = __webpack_require__(/*! ./createAll */ 237);
 	
 	var _createAll3 = _interopRequireDefault(_createAll2);
 	
-	var _plain = __webpack_require__(/*! ./structure/plain */ 412);
+	var _plain = __webpack_require__(/*! ./structure/plain */ 404);
 	
 	var _plain2 = _interopRequireDefault(_plain);
 	
@@ -26698,7 +25458,7 @@
 	exports.values = values;
 
 /***/ },
-/* 245 */
+/* 237 */
 /*!***************************************!*\
   !*** ./~/redux-form/lib/createAll.js ***!
   \***************************************/
@@ -26712,103 +25472,103 @@
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	var _reducer = __webpack_require__(/*! ./reducer */ 246);
+	var _reducer = __webpack_require__(/*! ./reducer */ 238);
 	
 	var _reducer2 = _interopRequireDefault(_reducer);
 	
-	var _reduxForm = __webpack_require__(/*! ./reduxForm */ 299);
+	var _reduxForm = __webpack_require__(/*! ./reduxForm */ 291);
 	
 	var _reduxForm2 = _interopRequireDefault(_reduxForm);
 	
-	var _Field = __webpack_require__(/*! ./Field */ 423);
+	var _Field = __webpack_require__(/*! ./Field */ 415);
 	
 	var _Field2 = _interopRequireDefault(_Field);
 	
-	var _Fields = __webpack_require__(/*! ./Fields */ 433);
+	var _Fields = __webpack_require__(/*! ./Fields */ 425);
 	
 	var _Fields2 = _interopRequireDefault(_Fields);
 	
-	var _FieldArray = __webpack_require__(/*! ./FieldArray */ 435);
+	var _FieldArray = __webpack_require__(/*! ./FieldArray */ 427);
 	
 	var _FieldArray2 = _interopRequireDefault(_FieldArray);
 	
-	var _formValueSelector = __webpack_require__(/*! ./formValueSelector */ 438);
+	var _formValueSelector = __webpack_require__(/*! ./formValueSelector */ 430);
 	
 	var _formValueSelector2 = _interopRequireDefault(_formValueSelector);
 	
-	var _values = __webpack_require__(/*! ./values */ 439);
+	var _values = __webpack_require__(/*! ./values */ 431);
 	
 	var _values2 = _interopRequireDefault(_values);
 	
-	var _getFormValues = __webpack_require__(/*! ./selectors/getFormValues */ 440);
+	var _getFormValues = __webpack_require__(/*! ./selectors/getFormValues */ 432);
 	
 	var _getFormValues2 = _interopRequireDefault(_getFormValues);
 	
-	var _getFormInitialValues = __webpack_require__(/*! ./selectors/getFormInitialValues */ 441);
+	var _getFormInitialValues = __webpack_require__(/*! ./selectors/getFormInitialValues */ 433);
 	
 	var _getFormInitialValues2 = _interopRequireDefault(_getFormInitialValues);
 	
-	var _getFormSyncErrors = __webpack_require__(/*! ./selectors/getFormSyncErrors */ 442);
+	var _getFormSyncErrors = __webpack_require__(/*! ./selectors/getFormSyncErrors */ 434);
 	
 	var _getFormSyncErrors2 = _interopRequireDefault(_getFormSyncErrors);
 	
-	var _getFormAsyncErrors = __webpack_require__(/*! ./selectors/getFormAsyncErrors */ 443);
+	var _getFormAsyncErrors = __webpack_require__(/*! ./selectors/getFormAsyncErrors */ 435);
 	
 	var _getFormAsyncErrors2 = _interopRequireDefault(_getFormAsyncErrors);
 	
-	var _getFormSubmitErrors = __webpack_require__(/*! ./selectors/getFormSubmitErrors */ 444);
+	var _getFormSubmitErrors = __webpack_require__(/*! ./selectors/getFormSubmitErrors */ 436);
 	
 	var _getFormSubmitErrors2 = _interopRequireDefault(_getFormSubmitErrors);
 	
-	var _isDirty = __webpack_require__(/*! ./selectors/isDirty */ 445);
+	var _isDirty = __webpack_require__(/*! ./selectors/isDirty */ 437);
 	
 	var _isDirty2 = _interopRequireDefault(_isDirty);
 	
-	var _isInvalid = __webpack_require__(/*! ./selectors/isInvalid */ 447);
+	var _isInvalid = __webpack_require__(/*! ./selectors/isInvalid */ 439);
 	
 	var _isInvalid2 = _interopRequireDefault(_isInvalid);
 	
-	var _isPristine = __webpack_require__(/*! ./selectors/isPristine */ 446);
+	var _isPristine = __webpack_require__(/*! ./selectors/isPristine */ 438);
 	
 	var _isPristine2 = _interopRequireDefault(_isPristine);
 	
-	var _isValid = __webpack_require__(/*! ./selectors/isValid */ 421);
+	var _isValid = __webpack_require__(/*! ./selectors/isValid */ 413);
 	
 	var _isValid2 = _interopRequireDefault(_isValid);
 	
-	var _isSubmitting = __webpack_require__(/*! ./selectors/isSubmitting */ 448);
+	var _isSubmitting = __webpack_require__(/*! ./selectors/isSubmitting */ 440);
 	
 	var _isSubmitting2 = _interopRequireDefault(_isSubmitting);
 	
-	var _hasSubmitSucceeded = __webpack_require__(/*! ./selectors/hasSubmitSucceeded */ 449);
+	var _hasSubmitSucceeded = __webpack_require__(/*! ./selectors/hasSubmitSucceeded */ 441);
 	
 	var _hasSubmitSucceeded2 = _interopRequireDefault(_hasSubmitSucceeded);
 	
-	var _hasSubmitFailed = __webpack_require__(/*! ./selectors/hasSubmitFailed */ 450);
+	var _hasSubmitFailed = __webpack_require__(/*! ./selectors/hasSubmitFailed */ 442);
 	
 	var _hasSubmitFailed2 = _interopRequireDefault(_hasSubmitFailed);
 	
-	var _Form = __webpack_require__(/*! ./Form */ 451);
+	var _Form = __webpack_require__(/*! ./Form */ 443);
 	
 	var _Form2 = _interopRequireDefault(_Form);
 	
-	var _FormSection = __webpack_require__(/*! ./FormSection */ 452);
+	var _FormSection = __webpack_require__(/*! ./FormSection */ 444);
 	
 	var _FormSection2 = _interopRequireDefault(_FormSection);
 	
-	var _SubmissionError = __webpack_require__(/*! ./SubmissionError */ 404);
+	var _SubmissionError = __webpack_require__(/*! ./SubmissionError */ 396);
 	
 	var _SubmissionError2 = _interopRequireDefault(_SubmissionError);
 	
-	var _propTypes = __webpack_require__(/*! ./propTypes */ 453);
+	var _propTypes = __webpack_require__(/*! ./propTypes */ 445);
 	
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 	
-	var _actions = __webpack_require__(/*! ./actions */ 402);
+	var _actions = __webpack_require__(/*! ./actions */ 394);
 	
 	var actions = _interopRequireWildcard(_actions);
 	
-	var _actionTypes = __webpack_require__(/*! ./actionTypes */ 247);
+	var _actionTypes = __webpack_require__(/*! ./actionTypes */ 239);
 	
 	var actionTypes = _interopRequireWildcard(_actionTypes);
 	
@@ -26850,7 +25610,7 @@
 	exports.default = createAll;
 
 /***/ },
-/* 246 */
+/* 238 */
 /*!*************************************!*\
   !*** ./~/redux-form/lib/reducer.js ***!
   \*************************************/
@@ -26862,9 +25622,9 @@
 	  value: true
 	});
 	
-	var _actionTypes = __webpack_require__(/*! ./actionTypes */ 247);
+	var _actionTypes = __webpack_require__(/*! ./actionTypes */ 239);
 	
-	var _deleteInWithCleanUp = __webpack_require__(/*! ./deleteInWithCleanUp */ 248);
+	var _deleteInWithCleanUp = __webpack_require__(/*! ./deleteInWithCleanUp */ 240);
 	
 	var _deleteInWithCleanUp2 = _interopRequireDefault(_deleteInWithCleanUp);
 	
@@ -27364,7 +26124,7 @@
 	exports.default = createReducer;
 
 /***/ },
-/* 247 */
+/* 239 */
 /*!*****************************************!*\
   !*** ./~/redux-form/lib/actionTypes.js ***!
   \*****************************************/
@@ -27409,7 +26169,7 @@
 	var UPDATE_SYNC_WARNINGS = exports.UPDATE_SYNC_WARNINGS = '@@redux-form/UPDATE_SYNC_WARNINGS';
 
 /***/ },
-/* 248 */
+/* 240 */
 /*!*************************************************!*\
   !*** ./~/redux-form/lib/deleteInWithCleanUp.js ***!
   \*************************************************/
@@ -27421,7 +26181,7 @@
 	  value: true
 	});
 	
-	var _toPath2 = __webpack_require__(/*! lodash/toPath */ 249);
+	var _toPath2 = __webpack_require__(/*! lodash/toPath */ 241);
 	
 	var _toPath3 = _interopRequireDefault(_toPath2);
 	
@@ -27463,19 +26223,19 @@
 	exports.default = createDeleteInWithCleanUp;
 
 /***/ },
-/* 249 */
+/* 241 */
 /*!*****************************************!*\
   !*** ./~/redux-form/~/lodash/toPath.js ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayMap = __webpack_require__(/*! ./_arrayMap */ 250),
-	    copyArray = __webpack_require__(/*! ./_copyArray */ 251),
-	    isArray = __webpack_require__(/*! ./isArray */ 252),
-	    isSymbol = __webpack_require__(/*! ./isSymbol */ 253),
-	    stringToPath = __webpack_require__(/*! ./_stringToPath */ 261),
-	    toKey = __webpack_require__(/*! ./_toKey */ 296),
-	    toString = __webpack_require__(/*! ./toString */ 297);
+	var arrayMap = __webpack_require__(/*! ./_arrayMap */ 242),
+	    copyArray = __webpack_require__(/*! ./_copyArray */ 243),
+	    isArray = __webpack_require__(/*! ./isArray */ 244),
+	    isSymbol = __webpack_require__(/*! ./isSymbol */ 245),
+	    stringToPath = __webpack_require__(/*! ./_stringToPath */ 253),
+	    toKey = __webpack_require__(/*! ./_toKey */ 288),
+	    toString = __webpack_require__(/*! ./toString */ 289);
 	
 	/**
 	 * Converts `value` to a property path array.
@@ -27505,7 +26265,7 @@
 
 
 /***/ },
-/* 250 */
+/* 242 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_arrayMap.js ***!
   \********************************************/
@@ -27535,7 +26295,7 @@
 
 
 /***/ },
-/* 251 */
+/* 243 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_copyArray.js ***!
   \*********************************************/
@@ -27564,7 +26324,7 @@
 
 
 /***/ },
-/* 252 */
+/* 244 */
 /*!******************************************!*\
   !*** ./~/redux-form/~/lodash/isArray.js ***!
   \******************************************/
@@ -27599,14 +26359,14 @@
 
 
 /***/ },
-/* 253 */
+/* 245 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/isSymbol.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 254),
-	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 260);
+	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 246),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 252);
 	
 	/** `Object#toString` result references. */
 	var symbolTag = '[object Symbol]';
@@ -27637,15 +26397,15 @@
 
 
 /***/ },
-/* 254 */
+/* 246 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseGetTag.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(/*! ./_Symbol */ 255),
-	    getRawTag = __webpack_require__(/*! ./_getRawTag */ 258),
-	    objectToString = __webpack_require__(/*! ./_objectToString */ 259);
+	var Symbol = __webpack_require__(/*! ./_Symbol */ 247),
+	    getRawTag = __webpack_require__(/*! ./_getRawTag */ 250),
+	    objectToString = __webpack_require__(/*! ./_objectToString */ 251);
 	
 	/** `Object#toString` result references. */
 	var nullTag = '[object Null]',
@@ -27674,13 +26434,13 @@
 
 
 /***/ },
-/* 255 */
+/* 247 */
 /*!******************************************!*\
   !*** ./~/redux-form/~/lodash/_Symbol.js ***!
   \******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(/*! ./_root */ 256);
+	var root = __webpack_require__(/*! ./_root */ 248);
 	
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -27689,13 +26449,13 @@
 
 
 /***/ },
-/* 256 */
+/* 248 */
 /*!****************************************!*\
   !*** ./~/redux-form/~/lodash/_root.js ***!
   \****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(/*! ./_freeGlobal */ 257);
+	var freeGlobal = __webpack_require__(/*! ./_freeGlobal */ 249);
 	
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -27707,7 +26467,7 @@
 
 
 /***/ },
-/* 257 */
+/* 249 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_freeGlobal.js ***!
   \**********************************************/
@@ -27721,13 +26481,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 258 */
+/* 250 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_getRawTag.js ***!
   \*********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(/*! ./_Symbol */ 255);
+	var Symbol = __webpack_require__(/*! ./_Symbol */ 247);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -27776,7 +26536,7 @@
 
 
 /***/ },
-/* 259 */
+/* 251 */
 /*!**************************************************!*\
   !*** ./~/redux-form/~/lodash/_objectToString.js ***!
   \**************************************************/
@@ -27807,7 +26567,7 @@
 
 
 /***/ },
-/* 260 */
+/* 252 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/isObjectLike.js ***!
   \***********************************************/
@@ -27845,13 +26605,13 @@
 
 
 /***/ },
-/* 261 */
+/* 253 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_stringToPath.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoizeCapped = __webpack_require__(/*! ./_memoizeCapped */ 262);
+	var memoizeCapped = __webpack_require__(/*! ./_memoizeCapped */ 254);
 	
 	/** Used to match property names within property paths. */
 	var reLeadingDot = /^\./,
@@ -27882,13 +26642,13 @@
 
 
 /***/ },
-/* 262 */
+/* 254 */
 /*!*************************************************!*\
   !*** ./~/redux-form/~/lodash/_memoizeCapped.js ***!
   \*************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoize = __webpack_require__(/*! ./memoize */ 263);
+	var memoize = __webpack_require__(/*! ./memoize */ 255);
 	
 	/** Used as the maximum memoize cache size. */
 	var MAX_MEMOIZE_SIZE = 500;
@@ -27917,13 +26677,13 @@
 
 
 /***/ },
-/* 263 */
+/* 255 */
 /*!******************************************!*\
   !*** ./~/redux-form/~/lodash/memoize.js ***!
   \******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(/*! ./_MapCache */ 264);
+	var MapCache = __webpack_require__(/*! ./_MapCache */ 256);
 	
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -27999,17 +26759,17 @@
 
 
 /***/ },
-/* 264 */
+/* 256 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_MapCache.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var mapCacheClear = __webpack_require__(/*! ./_mapCacheClear */ 265),
-	    mapCacheDelete = __webpack_require__(/*! ./_mapCacheDelete */ 290),
-	    mapCacheGet = __webpack_require__(/*! ./_mapCacheGet */ 293),
-	    mapCacheHas = __webpack_require__(/*! ./_mapCacheHas */ 294),
-	    mapCacheSet = __webpack_require__(/*! ./_mapCacheSet */ 295);
+	var mapCacheClear = __webpack_require__(/*! ./_mapCacheClear */ 257),
+	    mapCacheDelete = __webpack_require__(/*! ./_mapCacheDelete */ 282),
+	    mapCacheGet = __webpack_require__(/*! ./_mapCacheGet */ 285),
+	    mapCacheHas = __webpack_require__(/*! ./_mapCacheHas */ 286),
+	    mapCacheSet = __webpack_require__(/*! ./_mapCacheSet */ 287);
 	
 	/**
 	 * Creates a map cache object to store key-value pairs.
@@ -28040,15 +26800,15 @@
 
 
 /***/ },
-/* 265 */
+/* 257 */
 /*!*************************************************!*\
   !*** ./~/redux-form/~/lodash/_mapCacheClear.js ***!
   \*************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Hash = __webpack_require__(/*! ./_Hash */ 266),
-	    ListCache = __webpack_require__(/*! ./_ListCache */ 281),
-	    Map = __webpack_require__(/*! ./_Map */ 289);
+	var Hash = __webpack_require__(/*! ./_Hash */ 258),
+	    ListCache = __webpack_require__(/*! ./_ListCache */ 273),
+	    Map = __webpack_require__(/*! ./_Map */ 281);
 	
 	/**
 	 * Removes all key-value entries from the map.
@@ -28070,17 +26830,17 @@
 
 
 /***/ },
-/* 266 */
+/* 258 */
 /*!****************************************!*\
   !*** ./~/redux-form/~/lodash/_Hash.js ***!
   \****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var hashClear = __webpack_require__(/*! ./_hashClear */ 267),
-	    hashDelete = __webpack_require__(/*! ./_hashDelete */ 277),
-	    hashGet = __webpack_require__(/*! ./_hashGet */ 278),
-	    hashHas = __webpack_require__(/*! ./_hashHas */ 279),
-	    hashSet = __webpack_require__(/*! ./_hashSet */ 280);
+	var hashClear = __webpack_require__(/*! ./_hashClear */ 259),
+	    hashDelete = __webpack_require__(/*! ./_hashDelete */ 269),
+	    hashGet = __webpack_require__(/*! ./_hashGet */ 270),
+	    hashHas = __webpack_require__(/*! ./_hashHas */ 271),
+	    hashSet = __webpack_require__(/*! ./_hashSet */ 272);
 	
 	/**
 	 * Creates a hash object.
@@ -28111,13 +26871,13 @@
 
 
 /***/ },
-/* 267 */
+/* 259 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_hashClear.js ***!
   \*********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ 268);
+	var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ 260);
 	
 	/**
 	 * Removes all key-value entries from the hash.
@@ -28135,13 +26895,13 @@
 
 
 /***/ },
-/* 268 */
+/* 260 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_nativeCreate.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(/*! ./_getNative */ 269);
+	var getNative = __webpack_require__(/*! ./_getNative */ 261);
 	
 	/* Built-in method references that are verified to be native. */
 	var nativeCreate = getNative(Object, 'create');
@@ -28150,14 +26910,14 @@
 
 
 /***/ },
-/* 269 */
+/* 261 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_getNative.js ***!
   \*********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsNative = __webpack_require__(/*! ./_baseIsNative */ 270),
-	    getValue = __webpack_require__(/*! ./_getValue */ 276);
+	var baseIsNative = __webpack_require__(/*! ./_baseIsNative */ 262),
+	    getValue = __webpack_require__(/*! ./_getValue */ 268);
 	
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -28176,16 +26936,16 @@
 
 
 /***/ },
-/* 270 */
+/* 262 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseIsNative.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(/*! ./isFunction */ 271),
-	    isMasked = __webpack_require__(/*! ./_isMasked */ 273),
-	    isObject = __webpack_require__(/*! ./isObject */ 272),
-	    toSource = __webpack_require__(/*! ./_toSource */ 275);
+	var isFunction = __webpack_require__(/*! ./isFunction */ 263),
+	    isMasked = __webpack_require__(/*! ./_isMasked */ 265),
+	    isObject = __webpack_require__(/*! ./isObject */ 264),
+	    toSource = __webpack_require__(/*! ./_toSource */ 267);
 	
 	/**
 	 * Used to match `RegExp`
@@ -28232,14 +26992,14 @@
 
 
 /***/ },
-/* 271 */
+/* 263 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/isFunction.js ***!
   \*********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 254),
-	    isObject = __webpack_require__(/*! ./isObject */ 272);
+	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 246),
+	    isObject = __webpack_require__(/*! ./isObject */ 264);
 	
 	/** `Object#toString` result references. */
 	var asyncTag = '[object AsyncFunction]',
@@ -28278,7 +27038,7 @@
 
 
 /***/ },
-/* 272 */
+/* 264 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/isObject.js ***!
   \*******************************************/
@@ -28318,13 +27078,13 @@
 
 
 /***/ },
-/* 273 */
+/* 265 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_isMasked.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(/*! ./_coreJsData */ 274);
+	var coreJsData = __webpack_require__(/*! ./_coreJsData */ 266);
 	
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -28347,13 +27107,13 @@
 
 
 /***/ },
-/* 274 */
+/* 266 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_coreJsData.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(/*! ./_root */ 256);
+	var root = __webpack_require__(/*! ./_root */ 248);
 	
 	/** Used to detect overreaching core-js shims. */
 	var coreJsData = root['__core-js_shared__'];
@@ -28362,7 +27122,7 @@
 
 
 /***/ },
-/* 275 */
+/* 267 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_toSource.js ***!
   \********************************************/
@@ -28397,7 +27157,7 @@
 
 
 /***/ },
-/* 276 */
+/* 268 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_getValue.js ***!
   \********************************************/
@@ -28419,7 +27179,7 @@
 
 
 /***/ },
-/* 277 */
+/* 269 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_hashDelete.js ***!
   \**********************************************/
@@ -28445,13 +27205,13 @@
 
 
 /***/ },
-/* 278 */
+/* 270 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_hashGet.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ 268);
+	var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ 260);
 	
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -28484,13 +27244,13 @@
 
 
 /***/ },
-/* 279 */
+/* 271 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_hashHas.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ 268);
+	var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ 260);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -28516,13 +27276,13 @@
 
 
 /***/ },
-/* 280 */
+/* 272 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_hashSet.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ 268);
+	var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ 260);
 	
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -28548,17 +27308,17 @@
 
 
 /***/ },
-/* 281 */
+/* 273 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_ListCache.js ***!
   \*********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var listCacheClear = __webpack_require__(/*! ./_listCacheClear */ 282),
-	    listCacheDelete = __webpack_require__(/*! ./_listCacheDelete */ 283),
-	    listCacheGet = __webpack_require__(/*! ./_listCacheGet */ 286),
-	    listCacheHas = __webpack_require__(/*! ./_listCacheHas */ 287),
-	    listCacheSet = __webpack_require__(/*! ./_listCacheSet */ 288);
+	var listCacheClear = __webpack_require__(/*! ./_listCacheClear */ 274),
+	    listCacheDelete = __webpack_require__(/*! ./_listCacheDelete */ 275),
+	    listCacheGet = __webpack_require__(/*! ./_listCacheGet */ 278),
+	    listCacheHas = __webpack_require__(/*! ./_listCacheHas */ 279),
+	    listCacheSet = __webpack_require__(/*! ./_listCacheSet */ 280);
 	
 	/**
 	 * Creates an list cache object.
@@ -28589,7 +27349,7 @@
 
 
 /***/ },
-/* 282 */
+/* 274 */
 /*!**************************************************!*\
   !*** ./~/redux-form/~/lodash/_listCacheClear.js ***!
   \**************************************************/
@@ -28611,13 +27371,13 @@
 
 
 /***/ },
-/* 283 */
+/* 275 */
 /*!***************************************************!*\
   !*** ./~/redux-form/~/lodash/_listCacheDelete.js ***!
   \***************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ 284);
+	var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ 276);
 	
 	/** Used for built-in method references. */
 	var arrayProto = Array.prototype;
@@ -28655,13 +27415,13 @@
 
 
 /***/ },
-/* 284 */
+/* 276 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_assocIndexOf.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(/*! ./eq */ 285);
+	var eq = __webpack_require__(/*! ./eq */ 277);
 	
 	/**
 	 * Gets the index at which the `key` is found in `array` of key-value pairs.
@@ -28685,7 +27445,7 @@
 
 
 /***/ },
-/* 285 */
+/* 277 */
 /*!*************************************!*\
   !*** ./~/redux-form/~/lodash/eq.js ***!
   \*************************************/
@@ -28731,13 +27491,13 @@
 
 
 /***/ },
-/* 286 */
+/* 278 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_listCacheGet.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ 284);
+	var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ 276);
 	
 	/**
 	 * Gets the list cache value for `key`.
@@ -28759,13 +27519,13 @@
 
 
 /***/ },
-/* 287 */
+/* 279 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_listCacheHas.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ 284);
+	var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ 276);
 	
 	/**
 	 * Checks if a list cache value for `key` exists.
@@ -28784,13 +27544,13 @@
 
 
 /***/ },
-/* 288 */
+/* 280 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_listCacheSet.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ 284);
+	var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ 276);
 	
 	/**
 	 * Sets the list cache `key` to `value`.
@@ -28819,14 +27579,14 @@
 
 
 /***/ },
-/* 289 */
+/* 281 */
 /*!***************************************!*\
   !*** ./~/redux-form/~/lodash/_Map.js ***!
   \***************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(/*! ./_getNative */ 269),
-	    root = __webpack_require__(/*! ./_root */ 256);
+	var getNative = __webpack_require__(/*! ./_getNative */ 261),
+	    root = __webpack_require__(/*! ./_root */ 248);
 	
 	/* Built-in method references that are verified to be native. */
 	var Map = getNative(root, 'Map');
@@ -28835,13 +27595,13 @@
 
 
 /***/ },
-/* 290 */
+/* 282 */
 /*!**************************************************!*\
   !*** ./~/redux-form/~/lodash/_mapCacheDelete.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(/*! ./_getMapData */ 291);
+	var getMapData = __webpack_require__(/*! ./_getMapData */ 283);
 	
 	/**
 	 * Removes `key` and its value from the map.
@@ -28862,13 +27622,13 @@
 
 
 /***/ },
-/* 291 */
+/* 283 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_getMapData.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isKeyable = __webpack_require__(/*! ./_isKeyable */ 292);
+	var isKeyable = __webpack_require__(/*! ./_isKeyable */ 284);
 	
 	/**
 	 * Gets the data for `map`.
@@ -28889,7 +27649,7 @@
 
 
 /***/ },
-/* 292 */
+/* 284 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_isKeyable.js ***!
   \*********************************************/
@@ -28913,13 +27673,13 @@
 
 
 /***/ },
-/* 293 */
+/* 285 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_mapCacheGet.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(/*! ./_getMapData */ 291);
+	var getMapData = __webpack_require__(/*! ./_getMapData */ 283);
 	
 	/**
 	 * Gets the map value for `key`.
@@ -28938,13 +27698,13 @@
 
 
 /***/ },
-/* 294 */
+/* 286 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_mapCacheHas.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(/*! ./_getMapData */ 291);
+	var getMapData = __webpack_require__(/*! ./_getMapData */ 283);
 	
 	/**
 	 * Checks if a map value for `key` exists.
@@ -28963,13 +27723,13 @@
 
 
 /***/ },
-/* 295 */
+/* 287 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_mapCacheSet.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(/*! ./_getMapData */ 291);
+	var getMapData = __webpack_require__(/*! ./_getMapData */ 283);
 	
 	/**
 	 * Sets the map `key` to `value`.
@@ -28994,13 +27754,13 @@
 
 
 /***/ },
-/* 296 */
+/* 288 */
 /*!*****************************************!*\
   !*** ./~/redux-form/~/lodash/_toKey.js ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isSymbol = __webpack_require__(/*! ./isSymbol */ 253);
+	var isSymbol = __webpack_require__(/*! ./isSymbol */ 245);
 	
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -29024,13 +27784,13 @@
 
 
 /***/ },
-/* 297 */
+/* 289 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/toString.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(/*! ./_baseToString */ 298);
+	var baseToString = __webpack_require__(/*! ./_baseToString */ 290);
 	
 	/**
 	 * Converts `value` to a string. An empty string is returned for `null`
@@ -29061,16 +27821,16 @@
 
 
 /***/ },
-/* 298 */
+/* 290 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseToString.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(/*! ./_Symbol */ 255),
-	    arrayMap = __webpack_require__(/*! ./_arrayMap */ 250),
-	    isArray = __webpack_require__(/*! ./isArray */ 252),
-	    isSymbol = __webpack_require__(/*! ./isSymbol */ 253);
+	var Symbol = __webpack_require__(/*! ./_Symbol */ 247),
+	    arrayMap = __webpack_require__(/*! ./_arrayMap */ 242),
+	    isArray = __webpack_require__(/*! ./isArray */ 244),
+	    isSymbol = __webpack_require__(/*! ./isSymbol */ 245);
 	
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -29107,7 +27867,7 @@
 
 
 /***/ },
-/* 299 */
+/* 291 */
 /*!***************************************!*\
   !*** ./~/redux-form/lib/reduxForm.js ***!
   \***************************************/
@@ -29119,11 +27879,11 @@
 	  value: true
 	});
 	
-	var _merge4 = __webpack_require__(/*! lodash/merge */ 300);
+	var _merge4 = __webpack_require__(/*! lodash/merge */ 292);
 	
 	var _merge5 = _interopRequireDefault(_merge4);
 	
-	var _mapValues2 = __webpack_require__(/*! lodash/mapValues */ 354);
+	var _mapValues2 = __webpack_require__(/*! lodash/mapValues */ 346);
 	
 	var _mapValues3 = _interopRequireDefault(_mapValues2);
 	
@@ -29135,7 +27895,7 @@
 	
 	var _react = __webpack_require__(/*! react */ 1);
 	
-	var _hoistNonReactStatics = __webpack_require__(/*! hoist-non-react-statics */ 399);
+	var _hoistNonReactStatics = __webpack_require__(/*! hoist-non-react-statics */ 391);
 	
 	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 	
@@ -29143,51 +27903,51 @@
 	
 	var _redux = __webpack_require__(/*! redux */ 194);
 	
-	var _isPromise = __webpack_require__(/*! is-promise */ 400);
+	var _isPromise = __webpack_require__(/*! is-promise */ 392);
 	
 	var _isPromise2 = _interopRequireDefault(_isPromise);
 	
-	var _getDisplayName = __webpack_require__(/*! ./util/getDisplayName */ 401);
+	var _getDisplayName = __webpack_require__(/*! ./util/getDisplayName */ 393);
 	
 	var _getDisplayName2 = _interopRequireDefault(_getDisplayName);
 	
-	var _actions = __webpack_require__(/*! ./actions */ 402);
+	var _actions = __webpack_require__(/*! ./actions */ 394);
 	
 	var importedActions = _interopRequireWildcard(_actions);
 	
-	var _handleSubmit = __webpack_require__(/*! ./handleSubmit */ 403);
+	var _handleSubmit = __webpack_require__(/*! ./handleSubmit */ 395);
 	
 	var _handleSubmit2 = _interopRequireDefault(_handleSubmit);
 	
-	var _silenceEvent = __webpack_require__(/*! ./events/silenceEvent */ 406);
+	var _silenceEvent = __webpack_require__(/*! ./events/silenceEvent */ 398);
 	
 	var _silenceEvent2 = _interopRequireDefault(_silenceEvent);
 	
-	var _silenceEvents = __webpack_require__(/*! ./events/silenceEvents */ 408);
+	var _silenceEvents = __webpack_require__(/*! ./events/silenceEvents */ 400);
 	
 	var _silenceEvents2 = _interopRequireDefault(_silenceEvents);
 	
-	var _asyncValidation = __webpack_require__(/*! ./asyncValidation */ 409);
+	var _asyncValidation = __webpack_require__(/*! ./asyncValidation */ 401);
 	
 	var _asyncValidation2 = _interopRequireDefault(_asyncValidation);
 	
-	var _defaultShouldAsyncValidate = __webpack_require__(/*! ./defaultShouldAsyncValidate */ 410);
+	var _defaultShouldAsyncValidate = __webpack_require__(/*! ./defaultShouldAsyncValidate */ 402);
 	
 	var _defaultShouldAsyncValidate2 = _interopRequireDefault(_defaultShouldAsyncValidate);
 	
-	var _defaultShouldValidate = __webpack_require__(/*! ./defaultShouldValidate */ 411);
+	var _defaultShouldValidate = __webpack_require__(/*! ./defaultShouldValidate */ 403);
 	
 	var _defaultShouldValidate2 = _interopRequireDefault(_defaultShouldValidate);
 	
-	var _plain = __webpack_require__(/*! ./structure/plain */ 412);
+	var _plain = __webpack_require__(/*! ./structure/plain */ 404);
 	
 	var _plain2 = _interopRequireDefault(_plain);
 	
-	var _generateValidator2 = __webpack_require__(/*! ./generateValidator */ 420);
+	var _generateValidator2 = __webpack_require__(/*! ./generateValidator */ 412);
 	
 	var _generateValidator3 = _interopRequireDefault(_generateValidator2);
 	
-	var _isValid = __webpack_require__(/*! ./selectors/isValid */ 421);
+	var _isValid = __webpack_require__(/*! ./selectors/isValid */ 413);
 	
 	var _isValid2 = _interopRequireDefault(_isValid);
 	
@@ -29985,14 +28745,14 @@
 	exports.default = createReduxForm;
 
 /***/ },
-/* 300 */
+/* 292 */
 /*!****************************************!*\
   !*** ./~/redux-form/~/lodash/merge.js ***!
   \****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMerge = __webpack_require__(/*! ./_baseMerge */ 301),
-	    createAssigner = __webpack_require__(/*! ./_createAssigner */ 344);
+	var baseMerge = __webpack_require__(/*! ./_baseMerge */ 293),
+	    createAssigner = __webpack_require__(/*! ./_createAssigner */ 336);
 	
 	/**
 	 * This method is like `_.assign` except that it recursively merges own and
@@ -30033,18 +28793,18 @@
 
 
 /***/ },
-/* 301 */
+/* 293 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseMerge.js ***!
   \*********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(/*! ./_Stack */ 302),
-	    assignMergeValue = __webpack_require__(/*! ./_assignMergeValue */ 308),
-	    baseFor = __webpack_require__(/*! ./_baseFor */ 311),
-	    baseMergeDeep = __webpack_require__(/*! ./_baseMergeDeep */ 313),
-	    isObject = __webpack_require__(/*! ./isObject */ 272),
-	    keysIn = __webpack_require__(/*! ./keysIn */ 338);
+	var Stack = __webpack_require__(/*! ./_Stack */ 294),
+	    assignMergeValue = __webpack_require__(/*! ./_assignMergeValue */ 300),
+	    baseFor = __webpack_require__(/*! ./_baseFor */ 303),
+	    baseMergeDeep = __webpack_require__(/*! ./_baseMergeDeep */ 305),
+	    isObject = __webpack_require__(/*! ./isObject */ 264),
+	    keysIn = __webpack_require__(/*! ./keysIn */ 330);
 	
 	/**
 	 * The base implementation of `_.merge` without support for multiple sources.
@@ -30083,18 +28843,18 @@
 
 
 /***/ },
-/* 302 */
+/* 294 */
 /*!*****************************************!*\
   !*** ./~/redux-form/~/lodash/_Stack.js ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(/*! ./_ListCache */ 281),
-	    stackClear = __webpack_require__(/*! ./_stackClear */ 303),
-	    stackDelete = __webpack_require__(/*! ./_stackDelete */ 304),
-	    stackGet = __webpack_require__(/*! ./_stackGet */ 305),
-	    stackHas = __webpack_require__(/*! ./_stackHas */ 306),
-	    stackSet = __webpack_require__(/*! ./_stackSet */ 307);
+	var ListCache = __webpack_require__(/*! ./_ListCache */ 273),
+	    stackClear = __webpack_require__(/*! ./_stackClear */ 295),
+	    stackDelete = __webpack_require__(/*! ./_stackDelete */ 296),
+	    stackGet = __webpack_require__(/*! ./_stackGet */ 297),
+	    stackHas = __webpack_require__(/*! ./_stackHas */ 298),
+	    stackSet = __webpack_require__(/*! ./_stackSet */ 299);
 	
 	/**
 	 * Creates a stack cache object to store key-value pairs.
@@ -30119,13 +28879,13 @@
 
 
 /***/ },
-/* 303 */
+/* 295 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_stackClear.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(/*! ./_ListCache */ 281);
+	var ListCache = __webpack_require__(/*! ./_ListCache */ 273);
 	
 	/**
 	 * Removes all key-value entries from the stack.
@@ -30143,7 +28903,7 @@
 
 
 /***/ },
-/* 304 */
+/* 296 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_stackDelete.js ***!
   \***********************************************/
@@ -30170,7 +28930,7 @@
 
 
 /***/ },
-/* 305 */
+/* 297 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_stackGet.js ***!
   \********************************************/
@@ -30193,7 +28953,7 @@
 
 
 /***/ },
-/* 306 */
+/* 298 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_stackHas.js ***!
   \********************************************/
@@ -30216,15 +28976,15 @@
 
 
 /***/ },
-/* 307 */
+/* 299 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_stackSet.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(/*! ./_ListCache */ 281),
-	    Map = __webpack_require__(/*! ./_Map */ 289),
-	    MapCache = __webpack_require__(/*! ./_MapCache */ 264);
+	var ListCache = __webpack_require__(/*! ./_ListCache */ 273),
+	    Map = __webpack_require__(/*! ./_Map */ 281),
+	    MapCache = __webpack_require__(/*! ./_MapCache */ 256);
 	
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -30259,14 +29019,14 @@
 
 
 /***/ },
-/* 308 */
+/* 300 */
 /*!****************************************************!*\
   !*** ./~/redux-form/~/lodash/_assignMergeValue.js ***!
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ 309),
-	    eq = __webpack_require__(/*! ./eq */ 285);
+	var baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ 301),
+	    eq = __webpack_require__(/*! ./eq */ 277);
 	
 	/**
 	 * This function is like `assignValue` except that it doesn't assign
@@ -30288,13 +29048,13 @@
 
 
 /***/ },
-/* 309 */
+/* 301 */
 /*!***************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseAssignValue.js ***!
   \***************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var defineProperty = __webpack_require__(/*! ./_defineProperty */ 310);
+	var defineProperty = __webpack_require__(/*! ./_defineProperty */ 302);
 	
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
@@ -30322,13 +29082,13 @@
 
 
 /***/ },
-/* 310 */
+/* 302 */
 /*!**************************************************!*\
   !*** ./~/redux-form/~/lodash/_defineProperty.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(/*! ./_getNative */ 269);
+	var getNative = __webpack_require__(/*! ./_getNative */ 261);
 	
 	var defineProperty = (function() {
 	  try {
@@ -30342,13 +29102,13 @@
 
 
 /***/ },
-/* 311 */
+/* 303 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_baseFor.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var createBaseFor = __webpack_require__(/*! ./_createBaseFor */ 312);
+	var createBaseFor = __webpack_require__(/*! ./_createBaseFor */ 304);
 	
 	/**
 	 * The base implementation of `baseForOwn` which iterates over `object`
@@ -30367,7 +29127,7 @@
 
 
 /***/ },
-/* 312 */
+/* 304 */
 /*!*************************************************!*\
   !*** ./~/redux-form/~/lodash/_createBaseFor.js ***!
   \*************************************************/
@@ -30401,26 +29161,26 @@
 
 
 /***/ },
-/* 313 */
+/* 305 */
 /*!*************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseMergeDeep.js ***!
   \*************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignMergeValue = __webpack_require__(/*! ./_assignMergeValue */ 308),
-	    cloneBuffer = __webpack_require__(/*! ./_cloneBuffer */ 314),
-	    cloneTypedArray = __webpack_require__(/*! ./_cloneTypedArray */ 315),
-	    copyArray = __webpack_require__(/*! ./_copyArray */ 251),
-	    initCloneObject = __webpack_require__(/*! ./_initCloneObject */ 318),
-	    isArguments = __webpack_require__(/*! ./isArguments */ 323),
-	    isArray = __webpack_require__(/*! ./isArray */ 252),
-	    isArrayLikeObject = __webpack_require__(/*! ./isArrayLikeObject */ 325),
-	    isBuffer = __webpack_require__(/*! ./isBuffer */ 328),
-	    isFunction = __webpack_require__(/*! ./isFunction */ 271),
-	    isObject = __webpack_require__(/*! ./isObject */ 272),
-	    isPlainObject = __webpack_require__(/*! ./isPlainObject */ 330),
-	    isTypedArray = __webpack_require__(/*! ./isTypedArray */ 331),
-	    toPlainObject = __webpack_require__(/*! ./toPlainObject */ 335);
+	var assignMergeValue = __webpack_require__(/*! ./_assignMergeValue */ 300),
+	    cloneBuffer = __webpack_require__(/*! ./_cloneBuffer */ 306),
+	    cloneTypedArray = __webpack_require__(/*! ./_cloneTypedArray */ 307),
+	    copyArray = __webpack_require__(/*! ./_copyArray */ 243),
+	    initCloneObject = __webpack_require__(/*! ./_initCloneObject */ 310),
+	    isArguments = __webpack_require__(/*! ./isArguments */ 315),
+	    isArray = __webpack_require__(/*! ./isArray */ 244),
+	    isArrayLikeObject = __webpack_require__(/*! ./isArrayLikeObject */ 317),
+	    isBuffer = __webpack_require__(/*! ./isBuffer */ 320),
+	    isFunction = __webpack_require__(/*! ./isFunction */ 263),
+	    isObject = __webpack_require__(/*! ./isObject */ 264),
+	    isPlainObject = __webpack_require__(/*! ./isPlainObject */ 322),
+	    isTypedArray = __webpack_require__(/*! ./isTypedArray */ 323),
+	    toPlainObject = __webpack_require__(/*! ./toPlainObject */ 327);
 	
 	/**
 	 * A specialized version of `baseMerge` for arrays and objects which performs
@@ -30503,13 +29263,13 @@
 
 
 /***/ },
-/* 314 */
+/* 306 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_cloneBuffer.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(/*! ./_root */ 256);
+	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(/*! ./_root */ 248);
 	
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -30548,13 +29308,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../webpack/buildin/module.js */ 208)(module)))
 
 /***/ },
-/* 315 */
+/* 307 */
 /*!***************************************************!*\
   !*** ./~/redux-form/~/lodash/_cloneTypedArray.js ***!
   \***************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var cloneArrayBuffer = __webpack_require__(/*! ./_cloneArrayBuffer */ 316);
+	var cloneArrayBuffer = __webpack_require__(/*! ./_cloneArrayBuffer */ 308);
 	
 	/**
 	 * Creates a clone of `typedArray`.
@@ -30573,13 +29333,13 @@
 
 
 /***/ },
-/* 316 */
+/* 308 */
 /*!****************************************************!*\
   !*** ./~/redux-form/~/lodash/_cloneArrayBuffer.js ***!
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Uint8Array = __webpack_require__(/*! ./_Uint8Array */ 317);
+	var Uint8Array = __webpack_require__(/*! ./_Uint8Array */ 309);
 	
 	/**
 	 * Creates a clone of `arrayBuffer`.
@@ -30598,13 +29358,13 @@
 
 
 /***/ },
-/* 317 */
+/* 309 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_Uint8Array.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(/*! ./_root */ 256);
+	var root = __webpack_require__(/*! ./_root */ 248);
 	
 	/** Built-in value references. */
 	var Uint8Array = root.Uint8Array;
@@ -30613,15 +29373,15 @@
 
 
 /***/ },
-/* 318 */
+/* 310 */
 /*!***************************************************!*\
   !*** ./~/redux-form/~/lodash/_initCloneObject.js ***!
   \***************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseCreate = __webpack_require__(/*! ./_baseCreate */ 319),
-	    getPrototype = __webpack_require__(/*! ./_getPrototype */ 320),
-	    isPrototype = __webpack_require__(/*! ./_isPrototype */ 322);
+	var baseCreate = __webpack_require__(/*! ./_baseCreate */ 311),
+	    getPrototype = __webpack_require__(/*! ./_getPrototype */ 312),
+	    isPrototype = __webpack_require__(/*! ./_isPrototype */ 314);
 	
 	/**
 	 * Initializes an object clone.
@@ -30640,13 +29400,13 @@
 
 
 /***/ },
-/* 319 */
+/* 311 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseCreate.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(/*! ./isObject */ 272);
+	var isObject = __webpack_require__(/*! ./isObject */ 264);
 	
 	/** Built-in value references. */
 	var objectCreate = Object.create;
@@ -30679,13 +29439,13 @@
 
 
 /***/ },
-/* 320 */
+/* 312 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_getPrototype.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(/*! ./_overArg */ 321);
+	var overArg = __webpack_require__(/*! ./_overArg */ 313);
 	
 	/** Built-in value references. */
 	var getPrototype = overArg(Object.getPrototypeOf, Object);
@@ -30694,7 +29454,7 @@
 
 
 /***/ },
-/* 321 */
+/* 313 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_overArg.js ***!
   \*******************************************/
@@ -30718,7 +29478,7 @@
 
 
 /***/ },
-/* 322 */
+/* 314 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_isPrototype.js ***!
   \***********************************************/
@@ -30745,14 +29505,14 @@
 
 
 /***/ },
-/* 323 */
+/* 315 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/isArguments.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsArguments = __webpack_require__(/*! ./_baseIsArguments */ 324),
-	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 260);
+	var baseIsArguments = __webpack_require__(/*! ./_baseIsArguments */ 316),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 252);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -30790,14 +29550,14 @@
 
 
 /***/ },
-/* 324 */
+/* 316 */
 /*!***************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseIsArguments.js ***!
   \***************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 254),
-	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 260);
+	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 246),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 252);
 	
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]';
@@ -30817,14 +29577,14 @@
 
 
 /***/ },
-/* 325 */
+/* 317 */
 /*!****************************************************!*\
   !*** ./~/redux-form/~/lodash/isArrayLikeObject.js ***!
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(/*! ./isArrayLike */ 326),
-	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 260);
+	var isArrayLike = __webpack_require__(/*! ./isArrayLike */ 318),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 252);
 	
 	/**
 	 * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -30859,14 +29619,14 @@
 
 
 /***/ },
-/* 326 */
+/* 318 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/isArrayLike.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(/*! ./isFunction */ 271),
-	    isLength = __webpack_require__(/*! ./isLength */ 327);
+	var isFunction = __webpack_require__(/*! ./isFunction */ 263),
+	    isLength = __webpack_require__(/*! ./isLength */ 319);
 	
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -30901,7 +29661,7 @@
 
 
 /***/ },
-/* 327 */
+/* 319 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/isLength.js ***!
   \*******************************************/
@@ -30945,14 +29705,14 @@
 
 
 /***/ },
-/* 328 */
+/* 320 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/isBuffer.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(/*! ./_root */ 256),
-	    stubFalse = __webpack_require__(/*! ./stubFalse */ 329);
+	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(/*! ./_root */ 248),
+	    stubFalse = __webpack_require__(/*! ./stubFalse */ 321);
 	
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -30993,7 +29753,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../webpack/buildin/module.js */ 208)(module)))
 
 /***/ },
-/* 329 */
+/* 321 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/stubFalse.js ***!
   \********************************************/
@@ -31020,15 +29780,15 @@
 
 
 /***/ },
-/* 330 */
+/* 322 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/isPlainObject.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 254),
-	    getPrototype = __webpack_require__(/*! ./_getPrototype */ 320),
-	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 260);
+	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 246),
+	    getPrototype = __webpack_require__(/*! ./_getPrototype */ 312),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 252);
 	
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -31091,15 +29851,15 @@
 
 
 /***/ },
-/* 331 */
+/* 323 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/isTypedArray.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(/*! ./_baseIsTypedArray */ 332),
-	    baseUnary = __webpack_require__(/*! ./_baseUnary */ 333),
-	    nodeUtil = __webpack_require__(/*! ./_nodeUtil */ 334);
+	var baseIsTypedArray = __webpack_require__(/*! ./_baseIsTypedArray */ 324),
+	    baseUnary = __webpack_require__(/*! ./_baseUnary */ 325),
+	    nodeUtil = __webpack_require__(/*! ./_nodeUtil */ 326);
 	
 	/* Node.js helper references. */
 	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -31127,15 +29887,15 @@
 
 
 /***/ },
-/* 332 */
+/* 324 */
 /*!****************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseIsTypedArray.js ***!
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 254),
-	    isLength = __webpack_require__(/*! ./isLength */ 327),
-	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 260);
+	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 246),
+	    isLength = __webpack_require__(/*! ./isLength */ 319),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 252);
 	
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]',
@@ -31196,7 +29956,7 @@
 
 
 /***/ },
-/* 333 */
+/* 325 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseUnary.js ***!
   \*********************************************/
@@ -31219,13 +29979,13 @@
 
 
 /***/ },
-/* 334 */
+/* 326 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_nodeUtil.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(/*! ./_freeGlobal */ 257);
+	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(/*! ./_freeGlobal */ 249);
 	
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -31251,14 +30011,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../webpack/buildin/module.js */ 208)(module)))
 
 /***/ },
-/* 335 */
+/* 327 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/toPlainObject.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(/*! ./_copyObject */ 336),
-	    keysIn = __webpack_require__(/*! ./keysIn */ 338);
+	var copyObject = __webpack_require__(/*! ./_copyObject */ 328),
+	    keysIn = __webpack_require__(/*! ./keysIn */ 330);
 	
 	/**
 	 * Converts `value` to a plain object flattening inherited enumerable string
@@ -31292,14 +30052,14 @@
 
 
 /***/ },
-/* 336 */
+/* 328 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_copyObject.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignValue = __webpack_require__(/*! ./_assignValue */ 337),
-	    baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ 309);
+	var assignValue = __webpack_require__(/*! ./_assignValue */ 329),
+	    baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ 301);
 	
 	/**
 	 * Copies properties of `source` to `object`.
@@ -31341,14 +30101,14 @@
 
 
 /***/ },
-/* 337 */
+/* 329 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_assignValue.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ 309),
-	    eq = __webpack_require__(/*! ./eq */ 285);
+	var baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ 301),
+	    eq = __webpack_require__(/*! ./eq */ 277);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -31378,15 +30138,15 @@
 
 
 /***/ },
-/* 338 */
+/* 330 */
 /*!*****************************************!*\
   !*** ./~/redux-form/~/lodash/keysIn.js ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(/*! ./_arrayLikeKeys */ 339),
-	    baseKeysIn = __webpack_require__(/*! ./_baseKeysIn */ 342),
-	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 326);
+	var arrayLikeKeys = __webpack_require__(/*! ./_arrayLikeKeys */ 331),
+	    baseKeysIn = __webpack_require__(/*! ./_baseKeysIn */ 334),
+	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 318);
 	
 	/**
 	 * Creates an array of the own and inherited enumerable property names of `object`.
@@ -31419,18 +30179,18 @@
 
 
 /***/ },
-/* 339 */
+/* 331 */
 /*!*************************************************!*\
   !*** ./~/redux-form/~/lodash/_arrayLikeKeys.js ***!
   \*************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(/*! ./_baseTimes */ 340),
-	    isArguments = __webpack_require__(/*! ./isArguments */ 323),
-	    isArray = __webpack_require__(/*! ./isArray */ 252),
-	    isBuffer = __webpack_require__(/*! ./isBuffer */ 328),
-	    isIndex = __webpack_require__(/*! ./_isIndex */ 341),
-	    isTypedArray = __webpack_require__(/*! ./isTypedArray */ 331);
+	var baseTimes = __webpack_require__(/*! ./_baseTimes */ 332),
+	    isArguments = __webpack_require__(/*! ./isArguments */ 315),
+	    isArray = __webpack_require__(/*! ./isArray */ 244),
+	    isBuffer = __webpack_require__(/*! ./isBuffer */ 320),
+	    isIndex = __webpack_require__(/*! ./_isIndex */ 333),
+	    isTypedArray = __webpack_require__(/*! ./isTypedArray */ 323);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -31477,7 +30237,7 @@
 
 
 /***/ },
-/* 340 */
+/* 332 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseTimes.js ***!
   \*********************************************/
@@ -31506,7 +30266,7 @@
 
 
 /***/ },
-/* 341 */
+/* 333 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_isIndex.js ***!
   \*******************************************/
@@ -31537,15 +30297,15 @@
 
 
 /***/ },
-/* 342 */
+/* 334 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseKeysIn.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(/*! ./isObject */ 272),
-	    isPrototype = __webpack_require__(/*! ./_isPrototype */ 322),
-	    nativeKeysIn = __webpack_require__(/*! ./_nativeKeysIn */ 343);
+	var isObject = __webpack_require__(/*! ./isObject */ 264),
+	    isPrototype = __webpack_require__(/*! ./_isPrototype */ 314),
+	    nativeKeysIn = __webpack_require__(/*! ./_nativeKeysIn */ 335);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -31579,7 +30339,7 @@
 
 
 /***/ },
-/* 343 */
+/* 335 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_nativeKeysIn.js ***!
   \************************************************/
@@ -31608,14 +30368,14 @@
 
 
 /***/ },
-/* 344 */
+/* 336 */
 /*!**************************************************!*\
   !*** ./~/redux-form/~/lodash/_createAssigner.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseRest = __webpack_require__(/*! ./_baseRest */ 345),
-	    isIterateeCall = __webpack_require__(/*! ./_isIterateeCall */ 353);
+	var baseRest = __webpack_require__(/*! ./_baseRest */ 337),
+	    isIterateeCall = __webpack_require__(/*! ./_isIterateeCall */ 345);
 	
 	/**
 	 * Creates a function like `_.assign`.
@@ -31654,15 +30414,15 @@
 
 
 /***/ },
-/* 345 */
+/* 337 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseRest.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(/*! ./identity */ 346),
-	    overRest = __webpack_require__(/*! ./_overRest */ 347),
-	    setToString = __webpack_require__(/*! ./_setToString */ 349);
+	var identity = __webpack_require__(/*! ./identity */ 338),
+	    overRest = __webpack_require__(/*! ./_overRest */ 339),
+	    setToString = __webpack_require__(/*! ./_setToString */ 341);
 	
 	/**
 	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -31680,7 +30440,7 @@
 
 
 /***/ },
-/* 346 */
+/* 338 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/identity.js ***!
   \*******************************************/
@@ -31710,13 +30470,13 @@
 
 
 /***/ },
-/* 347 */
+/* 339 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_overRest.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(/*! ./_apply */ 348);
+	var apply = __webpack_require__(/*! ./_apply */ 340);
 	
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -31755,7 +30515,7 @@
 
 
 /***/ },
-/* 348 */
+/* 340 */
 /*!*****************************************!*\
   !*** ./~/redux-form/~/lodash/_apply.js ***!
   \*****************************************/
@@ -31785,14 +30545,14 @@
 
 
 /***/ },
-/* 349 */
+/* 341 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_setToString.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSetToString = __webpack_require__(/*! ./_baseSetToString */ 350),
-	    shortOut = __webpack_require__(/*! ./_shortOut */ 352);
+	var baseSetToString = __webpack_require__(/*! ./_baseSetToString */ 342),
+	    shortOut = __webpack_require__(/*! ./_shortOut */ 344);
 	
 	/**
 	 * Sets the `toString` method of `func` to return `string`.
@@ -31808,15 +30568,15 @@
 
 
 /***/ },
-/* 350 */
+/* 342 */
 /*!***************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseSetToString.js ***!
   \***************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var constant = __webpack_require__(/*! ./constant */ 351),
-	    defineProperty = __webpack_require__(/*! ./_defineProperty */ 310),
-	    identity = __webpack_require__(/*! ./identity */ 346);
+	var constant = __webpack_require__(/*! ./constant */ 343),
+	    defineProperty = __webpack_require__(/*! ./_defineProperty */ 302),
+	    identity = __webpack_require__(/*! ./identity */ 338);
 	
 	/**
 	 * The base implementation of `setToString` without support for hot loop shorting.
@@ -31839,7 +30599,7 @@
 
 
 /***/ },
-/* 351 */
+/* 343 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/constant.js ***!
   \*******************************************/
@@ -31874,7 +30634,7 @@
 
 
 /***/ },
-/* 352 */
+/* 344 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_shortOut.js ***!
   \********************************************/
@@ -31920,16 +30680,16 @@
 
 
 /***/ },
-/* 353 */
+/* 345 */
 /*!**************************************************!*\
   !*** ./~/redux-form/~/lodash/_isIterateeCall.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(/*! ./eq */ 285),
-	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 326),
-	    isIndex = __webpack_require__(/*! ./_isIndex */ 341),
-	    isObject = __webpack_require__(/*! ./isObject */ 272);
+	var eq = __webpack_require__(/*! ./eq */ 277),
+	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 318),
+	    isIndex = __webpack_require__(/*! ./_isIndex */ 333),
+	    isObject = __webpack_require__(/*! ./isObject */ 264);
 	
 	/**
 	 * Checks if the given arguments are from an iteratee call.
@@ -31959,15 +30719,15 @@
 
 
 /***/ },
-/* 354 */
+/* 346 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/mapValues.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ 309),
-	    baseForOwn = __webpack_require__(/*! ./_baseForOwn */ 355),
-	    baseIteratee = __webpack_require__(/*! ./_baseIteratee */ 359);
+	var baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ 301),
+	    baseForOwn = __webpack_require__(/*! ./_baseForOwn */ 347),
+	    baseIteratee = __webpack_require__(/*! ./_baseIteratee */ 351);
 	
 	/**
 	 * Creates an object with the same keys as `object` and values generated
@@ -32011,14 +30771,14 @@
 
 
 /***/ },
-/* 355 */
+/* 347 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseForOwn.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFor = __webpack_require__(/*! ./_baseFor */ 311),
-	    keys = __webpack_require__(/*! ./keys */ 356);
+	var baseFor = __webpack_require__(/*! ./_baseFor */ 303),
+	    keys = __webpack_require__(/*! ./keys */ 348);
 	
 	/**
 	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -32036,15 +30796,15 @@
 
 
 /***/ },
-/* 356 */
+/* 348 */
 /*!***************************************!*\
   !*** ./~/redux-form/~/lodash/keys.js ***!
   \***************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(/*! ./_arrayLikeKeys */ 339),
-	    baseKeys = __webpack_require__(/*! ./_baseKeys */ 357),
-	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 326);
+	var arrayLikeKeys = __webpack_require__(/*! ./_arrayLikeKeys */ 331),
+	    baseKeys = __webpack_require__(/*! ./_baseKeys */ 349),
+	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 318);
 	
 	/**
 	 * Creates an array of the own enumerable property names of `object`.
@@ -32082,14 +30842,14 @@
 
 
 /***/ },
-/* 357 */
+/* 349 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseKeys.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isPrototype = __webpack_require__(/*! ./_isPrototype */ 322),
-	    nativeKeys = __webpack_require__(/*! ./_nativeKeys */ 358);
+	var isPrototype = __webpack_require__(/*! ./_isPrototype */ 314),
+	    nativeKeys = __webpack_require__(/*! ./_nativeKeys */ 350);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -32121,13 +30881,13 @@
 
 
 /***/ },
-/* 358 */
+/* 350 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_nativeKeys.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(/*! ./_overArg */ 321);
+	var overArg = __webpack_require__(/*! ./_overArg */ 313);
 	
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeKeys = overArg(Object.keys, Object);
@@ -32136,17 +30896,17 @@
 
 
 /***/ },
-/* 359 */
+/* 351 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseIteratee.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMatches = __webpack_require__(/*! ./_baseMatches */ 360),
-	    baseMatchesProperty = __webpack_require__(/*! ./_baseMatchesProperty */ 388),
-	    identity = __webpack_require__(/*! ./identity */ 346),
-	    isArray = __webpack_require__(/*! ./isArray */ 252),
-	    property = __webpack_require__(/*! ./property */ 396);
+	var baseMatches = __webpack_require__(/*! ./_baseMatches */ 352),
+	    baseMatchesProperty = __webpack_require__(/*! ./_baseMatchesProperty */ 380),
+	    identity = __webpack_require__(/*! ./identity */ 338),
+	    isArray = __webpack_require__(/*! ./isArray */ 244),
+	    property = __webpack_require__(/*! ./property */ 388);
 	
 	/**
 	 * The base implementation of `_.iteratee`.
@@ -32176,15 +30936,15 @@
 
 
 /***/ },
-/* 360 */
+/* 352 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseMatches.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsMatch = __webpack_require__(/*! ./_baseIsMatch */ 361),
-	    getMatchData = __webpack_require__(/*! ./_getMatchData */ 385),
-	    matchesStrictComparable = __webpack_require__(/*! ./_matchesStrictComparable */ 387);
+	var baseIsMatch = __webpack_require__(/*! ./_baseIsMatch */ 353),
+	    getMatchData = __webpack_require__(/*! ./_getMatchData */ 377),
+	    matchesStrictComparable = __webpack_require__(/*! ./_matchesStrictComparable */ 379);
 	
 	/**
 	 * The base implementation of `_.matches` which doesn't clone `source`.
@@ -32207,14 +30967,14 @@
 
 
 /***/ },
-/* 361 */
+/* 353 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseIsMatch.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(/*! ./_Stack */ 302),
-	    baseIsEqual = __webpack_require__(/*! ./_baseIsEqual */ 362);
+	var Stack = __webpack_require__(/*! ./_Stack */ 294),
+	    baseIsEqual = __webpack_require__(/*! ./_baseIsEqual */ 354);
 	
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -32278,14 +31038,14 @@
 
 
 /***/ },
-/* 362 */
+/* 354 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseIsEqual.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqualDeep = __webpack_require__(/*! ./_baseIsEqualDeep */ 363),
-	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 260);
+	var baseIsEqualDeep = __webpack_require__(/*! ./_baseIsEqualDeep */ 355),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 252);
 	
 	/**
 	 * The base implementation of `_.isEqual` which supports partial comparisons
@@ -32315,20 +31075,20 @@
 
 
 /***/ },
-/* 363 */
+/* 355 */
 /*!***************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseIsEqualDeep.js ***!
   \***************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(/*! ./_Stack */ 302),
-	    equalArrays = __webpack_require__(/*! ./_equalArrays */ 364),
-	    equalByTag = __webpack_require__(/*! ./_equalByTag */ 370),
-	    equalObjects = __webpack_require__(/*! ./_equalObjects */ 373),
-	    getTag = __webpack_require__(/*! ./_getTag */ 380),
-	    isArray = __webpack_require__(/*! ./isArray */ 252),
-	    isBuffer = __webpack_require__(/*! ./isBuffer */ 328),
-	    isTypedArray = __webpack_require__(/*! ./isTypedArray */ 331);
+	var Stack = __webpack_require__(/*! ./_Stack */ 294),
+	    equalArrays = __webpack_require__(/*! ./_equalArrays */ 356),
+	    equalByTag = __webpack_require__(/*! ./_equalByTag */ 362),
+	    equalObjects = __webpack_require__(/*! ./_equalObjects */ 365),
+	    getTag = __webpack_require__(/*! ./_getTag */ 372),
+	    isArray = __webpack_require__(/*! ./isArray */ 244),
+	    isBuffer = __webpack_require__(/*! ./isBuffer */ 320),
+	    isTypedArray = __webpack_require__(/*! ./isTypedArray */ 323);
 	
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -32407,15 +31167,15 @@
 
 
 /***/ },
-/* 364 */
+/* 356 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_equalArrays.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(/*! ./_SetCache */ 365),
-	    arraySome = __webpack_require__(/*! ./_arraySome */ 368),
-	    cacheHas = __webpack_require__(/*! ./_cacheHas */ 369);
+	var SetCache = __webpack_require__(/*! ./_SetCache */ 357),
+	    arraySome = __webpack_require__(/*! ./_arraySome */ 360),
+	    cacheHas = __webpack_require__(/*! ./_cacheHas */ 361);
 	
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -32499,15 +31259,15 @@
 
 
 /***/ },
-/* 365 */
+/* 357 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_SetCache.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(/*! ./_MapCache */ 264),
-	    setCacheAdd = __webpack_require__(/*! ./_setCacheAdd */ 366),
-	    setCacheHas = __webpack_require__(/*! ./_setCacheHas */ 367);
+	var MapCache = __webpack_require__(/*! ./_MapCache */ 256),
+	    setCacheAdd = __webpack_require__(/*! ./_setCacheAdd */ 358),
+	    setCacheHas = __webpack_require__(/*! ./_setCacheHas */ 359);
 	
 	/**
 	 *
@@ -32535,7 +31295,7 @@
 
 
 /***/ },
-/* 366 */
+/* 358 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_setCacheAdd.js ***!
   \***********************************************/
@@ -32563,7 +31323,7 @@
 
 
 /***/ },
-/* 367 */
+/* 359 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_setCacheHas.js ***!
   \***********************************************/
@@ -32586,7 +31346,7 @@
 
 
 /***/ },
-/* 368 */
+/* 360 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_arraySome.js ***!
   \*********************************************/
@@ -32618,7 +31378,7 @@
 
 
 /***/ },
-/* 369 */
+/* 361 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_cacheHas.js ***!
   \********************************************/
@@ -32640,18 +31400,18 @@
 
 
 /***/ },
-/* 370 */
+/* 362 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_equalByTag.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(/*! ./_Symbol */ 255),
-	    Uint8Array = __webpack_require__(/*! ./_Uint8Array */ 317),
-	    eq = __webpack_require__(/*! ./eq */ 285),
-	    equalArrays = __webpack_require__(/*! ./_equalArrays */ 364),
-	    mapToArray = __webpack_require__(/*! ./_mapToArray */ 371),
-	    setToArray = __webpack_require__(/*! ./_setToArray */ 372);
+	var Symbol = __webpack_require__(/*! ./_Symbol */ 247),
+	    Uint8Array = __webpack_require__(/*! ./_Uint8Array */ 309),
+	    eq = __webpack_require__(/*! ./eq */ 277),
+	    equalArrays = __webpack_require__(/*! ./_equalArrays */ 356),
+	    mapToArray = __webpack_require__(/*! ./_mapToArray */ 363),
+	    setToArray = __webpack_require__(/*! ./_setToArray */ 364);
 	
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -32761,7 +31521,7 @@
 
 
 /***/ },
-/* 371 */
+/* 363 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_mapToArray.js ***!
   \**********************************************/
@@ -32788,7 +31548,7 @@
 
 
 /***/ },
-/* 372 */
+/* 364 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_setToArray.js ***!
   \**********************************************/
@@ -32815,13 +31575,13 @@
 
 
 /***/ },
-/* 373 */
+/* 365 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_equalObjects.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getAllKeys = __webpack_require__(/*! ./_getAllKeys */ 374);
+	var getAllKeys = __webpack_require__(/*! ./_getAllKeys */ 366);
 	
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -32913,15 +31673,15 @@
 
 
 /***/ },
-/* 374 */
+/* 366 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_getAllKeys.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetAllKeys = __webpack_require__(/*! ./_baseGetAllKeys */ 375),
-	    getSymbols = __webpack_require__(/*! ./_getSymbols */ 377),
-	    keys = __webpack_require__(/*! ./keys */ 356);
+	var baseGetAllKeys = __webpack_require__(/*! ./_baseGetAllKeys */ 367),
+	    getSymbols = __webpack_require__(/*! ./_getSymbols */ 369),
+	    keys = __webpack_require__(/*! ./keys */ 348);
 	
 	/**
 	 * Creates an array of own enumerable property names and symbols of `object`.
@@ -32938,14 +31698,14 @@
 
 
 /***/ },
-/* 375 */
+/* 367 */
 /*!**************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseGetAllKeys.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayPush = __webpack_require__(/*! ./_arrayPush */ 376),
-	    isArray = __webpack_require__(/*! ./isArray */ 252);
+	var arrayPush = __webpack_require__(/*! ./_arrayPush */ 368),
+	    isArray = __webpack_require__(/*! ./isArray */ 244);
 	
 	/**
 	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
@@ -32967,7 +31727,7 @@
 
 
 /***/ },
-/* 376 */
+/* 368 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_arrayPush.js ***!
   \*********************************************/
@@ -32996,14 +31756,14 @@
 
 
 /***/ },
-/* 377 */
+/* 369 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/_getSymbols.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayFilter = __webpack_require__(/*! ./_arrayFilter */ 378),
-	    stubArray = __webpack_require__(/*! ./stubArray */ 379);
+	var arrayFilter = __webpack_require__(/*! ./_arrayFilter */ 370),
+	    stubArray = __webpack_require__(/*! ./stubArray */ 371);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -33035,7 +31795,7 @@
 
 
 /***/ },
-/* 378 */
+/* 370 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/lodash/_arrayFilter.js ***!
   \***********************************************/
@@ -33069,7 +31829,7 @@
 
 
 /***/ },
-/* 379 */
+/* 371 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/stubArray.js ***!
   \********************************************/
@@ -33101,19 +31861,19 @@
 
 
 /***/ },
-/* 380 */
+/* 372 */
 /*!******************************************!*\
   !*** ./~/redux-form/~/lodash/_getTag.js ***!
   \******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var DataView = __webpack_require__(/*! ./_DataView */ 381),
-	    Map = __webpack_require__(/*! ./_Map */ 289),
-	    Promise = __webpack_require__(/*! ./_Promise */ 382),
-	    Set = __webpack_require__(/*! ./_Set */ 383),
-	    WeakMap = __webpack_require__(/*! ./_WeakMap */ 384),
-	    baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 254),
-	    toSource = __webpack_require__(/*! ./_toSource */ 275);
+	var DataView = __webpack_require__(/*! ./_DataView */ 373),
+	    Map = __webpack_require__(/*! ./_Map */ 281),
+	    Promise = __webpack_require__(/*! ./_Promise */ 374),
+	    Set = __webpack_require__(/*! ./_Set */ 375),
+	    WeakMap = __webpack_require__(/*! ./_WeakMap */ 376),
+	    baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 246),
+	    toSource = __webpack_require__(/*! ./_toSource */ 267);
 	
 	/** `Object#toString` result references. */
 	var mapTag = '[object Map]',
@@ -33168,14 +31928,14 @@
 
 
 /***/ },
-/* 381 */
+/* 373 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_DataView.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(/*! ./_getNative */ 269),
-	    root = __webpack_require__(/*! ./_root */ 256);
+	var getNative = __webpack_require__(/*! ./_getNative */ 261),
+	    root = __webpack_require__(/*! ./_root */ 248);
 	
 	/* Built-in method references that are verified to be native. */
 	var DataView = getNative(root, 'DataView');
@@ -33184,14 +31944,14 @@
 
 
 /***/ },
-/* 382 */
+/* 374 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_Promise.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(/*! ./_getNative */ 269),
-	    root = __webpack_require__(/*! ./_root */ 256);
+	var getNative = __webpack_require__(/*! ./_getNative */ 261),
+	    root = __webpack_require__(/*! ./_root */ 248);
 	
 	/* Built-in method references that are verified to be native. */
 	var Promise = getNative(root, 'Promise');
@@ -33200,14 +31960,14 @@
 
 
 /***/ },
-/* 383 */
+/* 375 */
 /*!***************************************!*\
   !*** ./~/redux-form/~/lodash/_Set.js ***!
   \***************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(/*! ./_getNative */ 269),
-	    root = __webpack_require__(/*! ./_root */ 256);
+	var getNative = __webpack_require__(/*! ./_getNative */ 261),
+	    root = __webpack_require__(/*! ./_root */ 248);
 	
 	/* Built-in method references that are verified to be native. */
 	var Set = getNative(root, 'Set');
@@ -33216,14 +31976,14 @@
 
 
 /***/ },
-/* 384 */
+/* 376 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_WeakMap.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(/*! ./_getNative */ 269),
-	    root = __webpack_require__(/*! ./_root */ 256);
+	var getNative = __webpack_require__(/*! ./_getNative */ 261),
+	    root = __webpack_require__(/*! ./_root */ 248);
 	
 	/* Built-in method references that are verified to be native. */
 	var WeakMap = getNative(root, 'WeakMap');
@@ -33232,14 +31992,14 @@
 
 
 /***/ },
-/* 385 */
+/* 377 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_getMatchData.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isStrictComparable = __webpack_require__(/*! ./_isStrictComparable */ 386),
-	    keys = __webpack_require__(/*! ./keys */ 356);
+	var isStrictComparable = __webpack_require__(/*! ./_isStrictComparable */ 378),
+	    keys = __webpack_require__(/*! ./keys */ 348);
 	
 	/**
 	 * Gets the property names, values, and compare flags of `object`.
@@ -33265,13 +32025,13 @@
 
 
 /***/ },
-/* 386 */
+/* 378 */
 /*!******************************************************!*\
   !*** ./~/redux-form/~/lodash/_isStrictComparable.js ***!
   \******************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(/*! ./isObject */ 272);
+	var isObject = __webpack_require__(/*! ./isObject */ 264);
 	
 	/**
 	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
@@ -33289,7 +32049,7 @@
 
 
 /***/ },
-/* 387 */
+/* 379 */
 /*!***********************************************************!*\
   !*** ./~/redux-form/~/lodash/_matchesStrictComparable.js ***!
   \***********************************************************/
@@ -33318,19 +32078,19 @@
 
 
 /***/ },
-/* 388 */
+/* 380 */
 /*!*******************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseMatchesProperty.js ***!
   \*******************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(/*! ./_baseIsEqual */ 362),
-	    get = __webpack_require__(/*! ./get */ 389),
-	    hasIn = __webpack_require__(/*! ./hasIn */ 393),
-	    isKey = __webpack_require__(/*! ./_isKey */ 392),
-	    isStrictComparable = __webpack_require__(/*! ./_isStrictComparable */ 386),
-	    matchesStrictComparable = __webpack_require__(/*! ./_matchesStrictComparable */ 387),
-	    toKey = __webpack_require__(/*! ./_toKey */ 296);
+	var baseIsEqual = __webpack_require__(/*! ./_baseIsEqual */ 354),
+	    get = __webpack_require__(/*! ./get */ 381),
+	    hasIn = __webpack_require__(/*! ./hasIn */ 385),
+	    isKey = __webpack_require__(/*! ./_isKey */ 384),
+	    isStrictComparable = __webpack_require__(/*! ./_isStrictComparable */ 378),
+	    matchesStrictComparable = __webpack_require__(/*! ./_matchesStrictComparable */ 379),
+	    toKey = __webpack_require__(/*! ./_toKey */ 288);
 	
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -33360,13 +32120,13 @@
 
 
 /***/ },
-/* 389 */
+/* 381 */
 /*!**************************************!*\
   !*** ./~/redux-form/~/lodash/get.js ***!
   \**************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(/*! ./_baseGet */ 390);
+	var baseGet = __webpack_require__(/*! ./_baseGet */ 382);
 	
 	/**
 	 * Gets the value at `path` of `object`. If the resolved value is
@@ -33402,14 +32162,14 @@
 
 
 /***/ },
-/* 390 */
+/* 382 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_baseGet.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(/*! ./_castPath */ 391),
-	    toKey = __webpack_require__(/*! ./_toKey */ 296);
+	var castPath = __webpack_require__(/*! ./_castPath */ 383),
+	    toKey = __webpack_require__(/*! ./_toKey */ 288);
 	
 	/**
 	 * The base implementation of `_.get` without support for default values.
@@ -33435,16 +32195,16 @@
 
 
 /***/ },
-/* 391 */
+/* 383 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/lodash/_castPath.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(/*! ./isArray */ 252),
-	    isKey = __webpack_require__(/*! ./_isKey */ 392),
-	    stringToPath = __webpack_require__(/*! ./_stringToPath */ 261),
-	    toString = __webpack_require__(/*! ./toString */ 297);
+	var isArray = __webpack_require__(/*! ./isArray */ 244),
+	    isKey = __webpack_require__(/*! ./_isKey */ 384),
+	    stringToPath = __webpack_require__(/*! ./_stringToPath */ 253),
+	    toString = __webpack_require__(/*! ./toString */ 289);
 	
 	/**
 	 * Casts `value` to a path array if it's not one.
@@ -33465,14 +32225,14 @@
 
 
 /***/ },
-/* 392 */
+/* 384 */
 /*!*****************************************!*\
   !*** ./~/redux-form/~/lodash/_isKey.js ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(/*! ./isArray */ 252),
-	    isSymbol = __webpack_require__(/*! ./isSymbol */ 253);
+	var isArray = __webpack_require__(/*! ./isArray */ 244),
+	    isSymbol = __webpack_require__(/*! ./isSymbol */ 245);
 	
 	/** Used to match property names within property paths. */
 	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -33503,14 +32263,14 @@
 
 
 /***/ },
-/* 393 */
+/* 385 */
 /*!****************************************!*\
   !*** ./~/redux-form/~/lodash/hasIn.js ***!
   \****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseHasIn = __webpack_require__(/*! ./_baseHasIn */ 394),
-	    hasPath = __webpack_require__(/*! ./_hasPath */ 395);
+	var baseHasIn = __webpack_require__(/*! ./_baseHasIn */ 386),
+	    hasPath = __webpack_require__(/*! ./_hasPath */ 387);
 	
 	/**
 	 * Checks if `path` is a direct or inherited property of `object`.
@@ -33546,7 +32306,7 @@
 
 
 /***/ },
-/* 394 */
+/* 386 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/lodash/_baseHasIn.js ***!
   \*********************************************/
@@ -33568,18 +32328,18 @@
 
 
 /***/ },
-/* 395 */
+/* 387 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/_hasPath.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(/*! ./_castPath */ 391),
-	    isArguments = __webpack_require__(/*! ./isArguments */ 323),
-	    isArray = __webpack_require__(/*! ./isArray */ 252),
-	    isIndex = __webpack_require__(/*! ./_isIndex */ 341),
-	    isLength = __webpack_require__(/*! ./isLength */ 327),
-	    toKey = __webpack_require__(/*! ./_toKey */ 296);
+	var castPath = __webpack_require__(/*! ./_castPath */ 383),
+	    isArguments = __webpack_require__(/*! ./isArguments */ 315),
+	    isArray = __webpack_require__(/*! ./isArray */ 244),
+	    isIndex = __webpack_require__(/*! ./_isIndex */ 333),
+	    isLength = __webpack_require__(/*! ./isLength */ 319),
+	    toKey = __webpack_require__(/*! ./_toKey */ 288);
 	
 	/**
 	 * Checks if `path` exists on `object`.
@@ -33616,16 +32376,16 @@
 
 
 /***/ },
-/* 396 */
+/* 388 */
 /*!*******************************************!*\
   !*** ./~/redux-form/~/lodash/property.js ***!
   \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(/*! ./_baseProperty */ 397),
-	    basePropertyDeep = __webpack_require__(/*! ./_basePropertyDeep */ 398),
-	    isKey = __webpack_require__(/*! ./_isKey */ 392),
-	    toKey = __webpack_require__(/*! ./_toKey */ 296);
+	var baseProperty = __webpack_require__(/*! ./_baseProperty */ 389),
+	    basePropertyDeep = __webpack_require__(/*! ./_basePropertyDeep */ 390),
+	    isKey = __webpack_require__(/*! ./_isKey */ 384),
+	    toKey = __webpack_require__(/*! ./_toKey */ 288);
 	
 	/**
 	 * Creates a function that returns the value at `path` of a given object.
@@ -33657,7 +32417,7 @@
 
 
 /***/ },
-/* 397 */
+/* 389 */
 /*!************************************************!*\
   !*** ./~/redux-form/~/lodash/_baseProperty.js ***!
   \************************************************/
@@ -33680,13 +32440,13 @@
 
 
 /***/ },
-/* 398 */
+/* 390 */
 /*!****************************************************!*\
   !*** ./~/redux-form/~/lodash/_basePropertyDeep.js ***!
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(/*! ./_baseGet */ 390);
+	var baseGet = __webpack_require__(/*! ./_baseGet */ 382);
 	
 	/**
 	 * A specialized version of `baseProperty` which supports deep paths.
@@ -33705,7 +32465,7 @@
 
 
 /***/ },
-/* 399 */
+/* 391 */
 /*!*********************************************************!*\
   !*** ./~/redux-form/~/hoist-non-react-statics/index.js ***!
   \*********************************************************/
@@ -33764,7 +32524,7 @@
 
 
 /***/ },
-/* 400 */
+/* 392 */
 /*!********************************************!*\
   !*** ./~/redux-form/~/is-promise/index.js ***!
   \********************************************/
@@ -33778,7 +32538,7 @@
 
 
 /***/ },
-/* 401 */
+/* 393 */
 /*!*************************************************!*\
   !*** ./~/redux-form/lib/util/getDisplayName.js ***!
   \*************************************************/
@@ -33796,7 +32556,7 @@
 	exports.default = getDisplayName;
 
 /***/ },
-/* 402 */
+/* 394 */
 /*!*************************************!*\
   !*** ./~/redux-form/lib/actions.js ***!
   \*************************************/
@@ -33811,7 +32571,7 @@
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	var _actionTypes = __webpack_require__(/*! ./actionTypes */ 247);
+	var _actionTypes = __webpack_require__(/*! ./actionTypes */ 239);
 	
 	var arrayInsert = exports.arrayInsert = function arrayInsert(form, field, index, value) {
 	  return { type: _actionTypes.ARRAY_INSERT, meta: { form: form, field: field, index: index }, payload: value };
@@ -34002,7 +32762,7 @@
 	};
 
 /***/ },
-/* 403 */
+/* 395 */
 /*!******************************************!*\
   !*** ./~/redux-form/lib/handleSubmit.js ***!
   \******************************************/
@@ -34016,11 +32776,11 @@
 	
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 	
-	var _isPromise = __webpack_require__(/*! is-promise */ 400);
+	var _isPromise = __webpack_require__(/*! is-promise */ 392);
 	
 	var _isPromise2 = _interopRequireDefault(_isPromise);
 	
-	var _SubmissionError = __webpack_require__(/*! ./SubmissionError */ 404);
+	var _SubmissionError = __webpack_require__(/*! ./SubmissionError */ 396);
 	
 	var _SubmissionError2 = _interopRequireDefault(_SubmissionError);
 	
@@ -34132,7 +32892,7 @@
 	exports.default = handleSubmit;
 
 /***/ },
-/* 404 */
+/* 396 */
 /*!*********************************************!*\
   !*** ./~/redux-form/lib/SubmissionError.js ***!
   \*********************************************/
@@ -34144,7 +32904,7 @@
 	  value: true
 	});
 	
-	var _es6Error = __webpack_require__(/*! es6-error */ 405);
+	var _es6Error = __webpack_require__(/*! es6-error */ 397);
 	
 	var _es6Error2 = _interopRequireDefault(_es6Error);
 	
@@ -34174,7 +32934,7 @@
 	exports.default = SubmissionError;
 
 /***/ },
-/* 405 */
+/* 397 */
 /*!***********************************************!*\
   !*** ./~/redux-form/~/es6-error/lib/index.js ***!
   \***********************************************/
@@ -34262,7 +33022,7 @@
 
 
 /***/ },
-/* 406 */
+/* 398 */
 /*!*************************************************!*\
   !*** ./~/redux-form/lib/events/silenceEvent.js ***!
   \*************************************************/
@@ -34274,7 +33034,7 @@
 	  value: true
 	});
 	
-	var _isEvent = __webpack_require__(/*! ./isEvent */ 407);
+	var _isEvent = __webpack_require__(/*! ./isEvent */ 399);
 	
 	var _isEvent2 = _interopRequireDefault(_isEvent);
 	
@@ -34291,7 +33051,7 @@
 	exports.default = silenceEvent;
 
 /***/ },
-/* 407 */
+/* 399 */
 /*!********************************************!*\
   !*** ./~/redux-form/lib/events/isEvent.js ***!
   \********************************************/
@@ -34309,7 +33069,7 @@
 	exports.default = isEvent;
 
 /***/ },
-/* 408 */
+/* 400 */
 /*!**************************************************!*\
   !*** ./~/redux-form/lib/events/silenceEvents.js ***!
   \**************************************************/
@@ -34321,7 +33081,7 @@
 	  value: true
 	});
 	
-	var _silenceEvent = __webpack_require__(/*! ./silenceEvent */ 406);
+	var _silenceEvent = __webpack_require__(/*! ./silenceEvent */ 398);
 	
 	var _silenceEvent2 = _interopRequireDefault(_silenceEvent);
 	
@@ -34340,7 +33100,7 @@
 	exports.default = silenceEvents;
 
 /***/ },
-/* 409 */
+/* 401 */
 /*!*********************************************!*\
   !*** ./~/redux-form/lib/asyncValidation.js ***!
   \*********************************************/
@@ -34352,7 +33112,7 @@
 	  value: true
 	});
 	
-	var _isPromise = __webpack_require__(/*! is-promise */ 400);
+	var _isPromise = __webpack_require__(/*! is-promise */ 392);
 	
 	var _isPromise2 = _interopRequireDefault(_isPromise);
 	
@@ -34383,7 +33143,7 @@
 	exports.default = asyncValidation;
 
 /***/ },
-/* 410 */
+/* 402 */
 /*!********************************************************!*\
   !*** ./~/redux-form/lib/defaultShouldAsyncValidate.js ***!
   \********************************************************/
@@ -34419,7 +33179,7 @@
 	exports.default = defaultShouldAsyncValidate;
 
 /***/ },
-/* 411 */
+/* 403 */
 /*!***************************************************!*\
   !*** ./~/redux-form/lib/defaultShouldValidate.js ***!
   \***************************************************/
@@ -34447,7 +33207,7 @@
 	exports.default = defaultShouldValidate;
 
 /***/ },
-/* 412 */
+/* 404 */
 /*!***************************************************!*\
   !*** ./~/redux-form/lib/structure/plain/index.js ***!
   \***************************************************/
@@ -34459,27 +33219,27 @@
 	  value: true
 	});
 	
-	var _splice = __webpack_require__(/*! ./splice */ 413);
+	var _splice = __webpack_require__(/*! ./splice */ 405);
 	
 	var _splice2 = _interopRequireDefault(_splice);
 	
-	var _getIn = __webpack_require__(/*! ./getIn */ 414);
+	var _getIn = __webpack_require__(/*! ./getIn */ 406);
 	
 	var _getIn2 = _interopRequireDefault(_getIn);
 	
-	var _setIn = __webpack_require__(/*! ./setIn */ 415);
+	var _setIn = __webpack_require__(/*! ./setIn */ 407);
 	
 	var _setIn2 = _interopRequireDefault(_setIn);
 	
-	var _deepEqual = __webpack_require__(/*! ./deepEqual */ 416);
+	var _deepEqual = __webpack_require__(/*! ./deepEqual */ 408);
 	
 	var _deepEqual2 = _interopRequireDefault(_deepEqual);
 	
-	var _deleteIn = __webpack_require__(/*! ./deleteIn */ 418);
+	var _deleteIn = __webpack_require__(/*! ./deleteIn */ 410);
 	
 	var _deleteIn2 = _interopRequireDefault(_deleteIn);
 	
-	var _keys = __webpack_require__(/*! ./keys */ 419);
+	var _keys = __webpack_require__(/*! ./keys */ 411);
 	
 	var _keys2 = _interopRequireDefault(_keys);
 	
@@ -34508,7 +33268,7 @@
 	exports.default = structure;
 
 /***/ },
-/* 413 */
+/* 405 */
 /*!****************************************************!*\
   !*** ./~/redux-form/lib/structure/plain/splice.js ***!
   \****************************************************/
@@ -34555,7 +33315,7 @@
 	exports.default = splice;
 
 /***/ },
-/* 414 */
+/* 406 */
 /*!***************************************************!*\
   !*** ./~/redux-form/lib/structure/plain/getIn.js ***!
   \***************************************************/
@@ -34567,7 +33327,7 @@
 	  value: true
 	});
 	
-	var _toPath2 = __webpack_require__(/*! lodash/toPath */ 249);
+	var _toPath2 = __webpack_require__(/*! lodash/toPath */ 241);
 	
 	var _toPath3 = _interopRequireDefault(_toPath2);
 	
@@ -34595,7 +33355,7 @@
 	exports.default = getIn;
 
 /***/ },
-/* 415 */
+/* 407 */
 /*!***************************************************!*\
   !*** ./~/redux-form/lib/structure/plain/setIn.js ***!
   \***************************************************/
@@ -34607,7 +33367,7 @@
 	  value: true
 	});
 	
-	var _toPath2 = __webpack_require__(/*! lodash/toPath */ 249);
+	var _toPath2 = __webpack_require__(/*! lodash/toPath */ 241);
 	
 	var _toPath3 = _interopRequireDefault(_toPath2);
 	
@@ -34647,7 +33407,7 @@
 	exports.default = setIn;
 
 /***/ },
-/* 416 */
+/* 408 */
 /*!*******************************************************!*\
   !*** ./~/redux-form/lib/structure/plain/deepEqual.js ***!
   \*******************************************************/
@@ -34659,7 +33419,7 @@
 	  value: true
 	});
 	
-	var _isEqualWith2 = __webpack_require__(/*! lodash/isEqualWith */ 417);
+	var _isEqualWith2 = __webpack_require__(/*! lodash/isEqualWith */ 409);
 	
 	var _isEqualWith3 = _interopRequireDefault(_isEqualWith2);
 	
@@ -34680,13 +33440,13 @@
 	exports.default = deepEqual;
 
 /***/ },
-/* 417 */
+/* 409 */
 /*!**********************************************!*\
   !*** ./~/redux-form/~/lodash/isEqualWith.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(/*! ./_baseIsEqual */ 362);
+	var baseIsEqual = __webpack_require__(/*! ./_baseIsEqual */ 354);
 	
 	/**
 	 * This method is like `_.isEqual` except that it accepts `customizer` which
@@ -34730,7 +33490,7 @@
 
 
 /***/ },
-/* 418 */
+/* 410 */
 /*!******************************************************!*\
   !*** ./~/redux-form/lib/structure/plain/deleteIn.js ***!
   \******************************************************/
@@ -34742,7 +33502,7 @@
 	  value: true
 	});
 	
-	var _toPath2 = __webpack_require__(/*! lodash/toPath */ 249);
+	var _toPath2 = __webpack_require__(/*! lodash/toPath */ 241);
 	
 	var _toPath3 = _interopRequireDefault(_toPath2);
 	
@@ -34806,7 +33566,7 @@
 	exports.default = deleteIn;
 
 /***/ },
-/* 419 */
+/* 411 */
 /*!**************************************************!*\
   !*** ./~/redux-form/lib/structure/plain/keys.js ***!
   \**************************************************/
@@ -34824,7 +33584,7 @@
 	exports.default = keys;
 
 /***/ },
-/* 420 */
+/* 412 */
 /*!***********************************************!*\
   !*** ./~/redux-form/lib/generateValidator.js ***!
   \***********************************************/
@@ -34836,7 +33596,7 @@
 	  value: true
 	});
 	
-	var _plain = __webpack_require__(/*! ./structure/plain */ 412);
+	var _plain = __webpack_require__(/*! ./structure/plain */ 404);
 	
 	var _plain2 = _interopRequireDefault(_plain);
 	
@@ -34894,7 +33654,7 @@
 	exports.default = generateValidator;
 
 /***/ },
-/* 421 */
+/* 413 */
 /*!***********************************************!*\
   !*** ./~/redux-form/lib/selectors/isValid.js ***!
   \***********************************************/
@@ -34906,7 +33666,7 @@
 	  value: true
 	});
 	
-	var _hasError = __webpack_require__(/*! ../hasError */ 422);
+	var _hasError = __webpack_require__(/*! ../hasError */ 414);
 	
 	var _hasError2 = _interopRequireDefault(_hasError);
 	
@@ -34958,7 +33718,7 @@
 	exports.default = createIsValid;
 
 /***/ },
-/* 422 */
+/* 414 */
 /*!**************************************!*\
   !*** ./~/redux-form/lib/hasError.js ***!
   \**************************************/
@@ -34970,7 +33730,7 @@
 	  value: true
 	});
 	
-	var _getIn = __webpack_require__(/*! ./structure/plain/getIn */ 414);
+	var _getIn = __webpack_require__(/*! ./structure/plain/getIn */ 406);
 	
 	var _getIn2 = _interopRequireDefault(_getIn);
 	
@@ -35005,7 +33765,7 @@
 	exports.default = createHasError;
 
 /***/ },
-/* 423 */
+/* 415 */
 /*!***********************************!*\
   !*** ./~/redux-form/lib/Field.js ***!
   \***********************************/
@@ -35023,19 +33783,19 @@
 	
 	var _react = __webpack_require__(/*! react */ 1);
 	
-	var _invariant = __webpack_require__(/*! invariant */ 424);
+	var _invariant = __webpack_require__(/*! invariant */ 416);
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _ConnectedField = __webpack_require__(/*! ./ConnectedField */ 425);
+	var _ConnectedField = __webpack_require__(/*! ./ConnectedField */ 417);
 	
 	var _ConnectedField2 = _interopRequireDefault(_ConnectedField);
 	
-	var _shallowCompare = __webpack_require__(/*! ./util/shallowCompare */ 431);
+	var _shallowCompare = __webpack_require__(/*! ./util/shallowCompare */ 423);
 	
 	var _shallowCompare2 = _interopRequireDefault(_shallowCompare);
 	
-	var _prefixName = __webpack_require__(/*! ./util/prefixName */ 432);
+	var _prefixName = __webpack_require__(/*! ./util/prefixName */ 424);
 	
 	var _prefixName2 = _interopRequireDefault(_prefixName);
 	
@@ -35184,7 +33944,7 @@
 	exports.default = createField;
 
 /***/ },
-/* 424 */
+/* 416 */
 /*!*********************************************!*\
   !*** ./~/redux-form/~/invariant/browser.js ***!
   \*********************************************/
@@ -35245,7 +34005,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../webpack/~/node-libs-browser/~/process/browser.js */ 3)))
 
 /***/ },
-/* 425 */
+/* 417 */
 /*!********************************************!*\
   !*** ./~/redux-form/lib/ConnectedField.js ***!
   \********************************************/
@@ -35265,19 +34025,19 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
 	
-	var _createFieldProps2 = __webpack_require__(/*! ./createFieldProps */ 426);
+	var _createFieldProps2 = __webpack_require__(/*! ./createFieldProps */ 418);
 	
 	var _createFieldProps3 = _interopRequireDefault(_createFieldProps2);
 	
-	var _plain = __webpack_require__(/*! ./structure/plain */ 412);
+	var _plain = __webpack_require__(/*! ./structure/plain */ 404);
 	
 	var _plain2 = _interopRequireDefault(_plain);
 	
-	var _onChangeValue = __webpack_require__(/*! ./events/onChangeValue */ 427);
+	var _onChangeValue = __webpack_require__(/*! ./events/onChangeValue */ 419);
 	
 	var _onChangeValue2 = _interopRequireDefault(_onChangeValue);
 	
-	var _eventConsts = __webpack_require__(/*! ./util/eventConsts */ 430);
+	var _eventConsts = __webpack_require__(/*! ./util/eventConsts */ 422);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -35572,7 +34332,7 @@
 	exports.default = createConnectedField;
 
 /***/ },
-/* 426 */
+/* 418 */
 /*!**********************************************!*\
   !*** ./~/redux-form/lib/createFieldProps.js ***!
   \**********************************************/
@@ -35692,7 +34452,7 @@
 	exports.default = createFieldProps;
 
 /***/ },
-/* 427 */
+/* 419 */
 /*!**************************************************!*\
   !*** ./~/redux-form/lib/events/onChangeValue.js ***!
   \**************************************************/
@@ -35704,11 +34464,11 @@
 	  value: true
 	});
 	
-	var _getValue = __webpack_require__(/*! ./getValue */ 428);
+	var _getValue = __webpack_require__(/*! ./getValue */ 420);
 	
 	var _getValue2 = _interopRequireDefault(_getValue);
 	
-	var _isReactNative = __webpack_require__(/*! ../isReactNative */ 429);
+	var _isReactNative = __webpack_require__(/*! ../isReactNative */ 421);
 	
 	var _isReactNative2 = _interopRequireDefault(_isReactNative);
 	
@@ -35738,7 +34498,7 @@
 	exports.default = onChangeValue;
 
 /***/ },
-/* 428 */
+/* 420 */
 /*!*********************************************!*\
   !*** ./~/redux-form/lib/events/getValue.js ***!
   \*********************************************/
@@ -35750,7 +34510,7 @@
 	  value: true
 	});
 	
-	var _isEvent = __webpack_require__(/*! ./isEvent */ 407);
+	var _isEvent = __webpack_require__(/*! ./isEvent */ 399);
 	
 	var _isEvent2 = _interopRequireDefault(_isEvent);
 	
@@ -35801,7 +34561,7 @@
 	exports.default = getValue;
 
 /***/ },
-/* 429 */
+/* 421 */
 /*!*******************************************!*\
   !*** ./~/redux-form/lib/isReactNative.js ***!
   \*******************************************/
@@ -35817,7 +34577,7 @@
 	exports.default = isReactNative;
 
 /***/ },
-/* 430 */
+/* 422 */
 /*!**********************************************!*\
   !*** ./~/redux-form/lib/util/eventConsts.js ***!
   \**********************************************/
@@ -35831,7 +34591,7 @@
 	var dataKey = exports.dataKey = 'text';
 
 /***/ },
-/* 431 */
+/* 423 */
 /*!*************************************************!*\
   !*** ./~/redux-form/lib/util/shallowCompare.js ***!
   \*************************************************/
@@ -35843,7 +34603,7 @@
 	  value: true
 	});
 	
-	var _isEqualWith2 = __webpack_require__(/*! lodash/isEqualWith */ 417);
+	var _isEqualWith2 = __webpack_require__(/*! lodash/isEqualWith */ 409);
 	
 	var _isEqualWith3 = _interopRequireDefault(_isEqualWith2);
 	
@@ -35868,7 +34628,7 @@
 	exports.default = shallowCompare;
 
 /***/ },
-/* 432 */
+/* 424 */
 /*!*********************************************!*\
   !*** ./~/redux-form/lib/util/prefixName.js ***!
   \*********************************************/
@@ -35887,7 +34647,7 @@
 	}
 
 /***/ },
-/* 433 */
+/* 425 */
 /*!************************************!*\
   !*** ./~/redux-form/lib/Fields.js ***!
   \************************************/
@@ -35905,23 +34665,23 @@
 	
 	var _react = __webpack_require__(/*! react */ 1);
 	
-	var _invariant = __webpack_require__(/*! invariant */ 424);
+	var _invariant = __webpack_require__(/*! invariant */ 416);
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _ConnectedFields = __webpack_require__(/*! ./ConnectedFields */ 434);
+	var _ConnectedFields = __webpack_require__(/*! ./ConnectedFields */ 426);
 	
 	var _ConnectedFields2 = _interopRequireDefault(_ConnectedFields);
 	
-	var _shallowCompare = __webpack_require__(/*! ./util/shallowCompare */ 431);
+	var _shallowCompare = __webpack_require__(/*! ./util/shallowCompare */ 423);
 	
 	var _shallowCompare2 = _interopRequireDefault(_shallowCompare);
 	
-	var _plain = __webpack_require__(/*! ./structure/plain */ 412);
+	var _plain = __webpack_require__(/*! ./structure/plain */ 404);
 	
 	var _plain2 = _interopRequireDefault(_plain);
 	
-	var _prefixName = __webpack_require__(/*! ./util/prefixName */ 432);
+	var _prefixName = __webpack_require__(/*! ./util/prefixName */ 424);
 	
 	var _prefixName2 = _interopRequireDefault(_prefixName);
 	
@@ -36089,7 +34849,7 @@
 	exports.default = createFields;
 
 /***/ },
-/* 434 */
+/* 426 */
 /*!*********************************************!*\
   !*** ./~/redux-form/lib/ConnectedFields.js ***!
   \*********************************************/
@@ -36109,15 +34869,15 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
 	
-	var _createFieldProps2 = __webpack_require__(/*! ./createFieldProps */ 426);
+	var _createFieldProps2 = __webpack_require__(/*! ./createFieldProps */ 418);
 	
 	var _createFieldProps3 = _interopRequireDefault(_createFieldProps2);
 	
-	var _plain = __webpack_require__(/*! ./structure/plain */ 412);
+	var _plain = __webpack_require__(/*! ./structure/plain */ 404);
 	
 	var _plain2 = _interopRequireDefault(_plain);
 	
-	var _onChangeValue = __webpack_require__(/*! ./events/onChangeValue */ 427);
+	var _onChangeValue = __webpack_require__(/*! ./events/onChangeValue */ 419);
 	
 	var _onChangeValue2 = _interopRequireDefault(_onChangeValue);
 	
@@ -36385,7 +35145,7 @@
 	exports.default = createConnectedFields;
 
 /***/ },
-/* 435 */
+/* 427 */
 /*!****************************************!*\
   !*** ./~/redux-form/lib/FieldArray.js ***!
   \****************************************/
@@ -36403,19 +35163,19 @@
 	
 	var _react = __webpack_require__(/*! react */ 1);
 	
-	var _invariant = __webpack_require__(/*! invariant */ 424);
+	var _invariant = __webpack_require__(/*! invariant */ 416);
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _ConnectedFieldArray = __webpack_require__(/*! ./ConnectedFieldArray */ 436);
+	var _ConnectedFieldArray = __webpack_require__(/*! ./ConnectedFieldArray */ 428);
 	
 	var _ConnectedFieldArray2 = _interopRequireDefault(_ConnectedFieldArray);
 	
-	var _shallowCompare = __webpack_require__(/*! ./util/shallowCompare */ 431);
+	var _shallowCompare = __webpack_require__(/*! ./util/shallowCompare */ 423);
 	
 	var _shallowCompare2 = _interopRequireDefault(_shallowCompare);
 	
-	var _prefixName = __webpack_require__(/*! ./util/prefixName */ 432);
+	var _prefixName = __webpack_require__(/*! ./util/prefixName */ 424);
 	
 	var _prefixName2 = _interopRequireDefault(_prefixName);
 	
@@ -36576,7 +35336,7 @@
 	exports.default = createFieldArray;
 
 /***/ },
-/* 436 */
+/* 428 */
 /*!*************************************************!*\
   !*** ./~/redux-form/lib/ConnectedFieldArray.js ***!
   \*************************************************/
@@ -36588,7 +35348,7 @@
 	  value: true
 	});
 	
-	var _mapValues2 = __webpack_require__(/*! lodash/mapValues */ 354);
+	var _mapValues2 = __webpack_require__(/*! lodash/mapValues */ 346);
 	
 	var _mapValues3 = _interopRequireDefault(_mapValues2);
 	
@@ -36600,11 +35360,11 @@
 	
 	var _redux = __webpack_require__(/*! redux */ 194);
 	
-	var _createFieldArrayProps = __webpack_require__(/*! ./createFieldArrayProps */ 437);
+	var _createFieldArrayProps = __webpack_require__(/*! ./createFieldArrayProps */ 429);
 	
 	var _createFieldArrayProps2 = _interopRequireDefault(_createFieldArrayProps);
 	
-	var _plain = __webpack_require__(/*! ./structure/plain */ 412);
+	var _plain = __webpack_require__(/*! ./structure/plain */ 404);
 	
 	var _plain2 = _interopRequireDefault(_plain);
 	
@@ -36784,7 +35544,7 @@
 	exports.default = createConnectedFieldArray;
 
 /***/ },
-/* 437 */
+/* 429 */
 /*!***************************************************!*\
   !*** ./~/redux-form/lib/createFieldArrayProps.js ***!
   \***************************************************/
@@ -36885,7 +35645,7 @@
 	exports.default = createFieldArrayProps;
 
 /***/ },
-/* 438 */
+/* 430 */
 /*!***********************************************!*\
   !*** ./~/redux-form/lib/formValueSelector.js ***!
   \***********************************************/
@@ -36897,11 +35657,11 @@
 	  value: true
 	});
 	
-	var _invariant = __webpack_require__(/*! invariant */ 424);
+	var _invariant = __webpack_require__(/*! invariant */ 416);
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _plain = __webpack_require__(/*! ./structure/plain */ 412);
+	var _plain = __webpack_require__(/*! ./structure/plain */ 404);
 	
 	var _plain2 = _interopRequireDefault(_plain);
 	
@@ -36936,7 +35696,7 @@
 	exports.default = createFormValueSelector;
 
 /***/ },
-/* 439 */
+/* 431 */
 /*!************************************!*\
   !*** ./~/redux-form/lib/values.js ***!
   \************************************/
@@ -36979,7 +35739,7 @@
 	exports.default = createValues;
 
 /***/ },
-/* 440 */
+/* 432 */
 /*!*****************************************************!*\
   !*** ./~/redux-form/lib/selectors/getFormValues.js ***!
   \*****************************************************/
@@ -37005,7 +35765,7 @@
 	exports.default = createGetFormValues;
 
 /***/ },
-/* 441 */
+/* 433 */
 /*!************************************************************!*\
   !*** ./~/redux-form/lib/selectors/getFormInitialValues.js ***!
   \************************************************************/
@@ -37031,7 +35791,7 @@
 	exports.default = createGetFormInitialValues;
 
 /***/ },
-/* 442 */
+/* 434 */
 /*!*********************************************************!*\
   !*** ./~/redux-form/lib/selectors/getFormSyncErrors.js ***!
   \*********************************************************/
@@ -37057,7 +35817,7 @@
 	exports.default = createGetFormSyncErrors;
 
 /***/ },
-/* 443 */
+/* 435 */
 /*!**********************************************************!*\
   !*** ./~/redux-form/lib/selectors/getFormAsyncErrors.js ***!
   \**********************************************************/
@@ -37083,7 +35843,7 @@
 	exports.default = createGetFormAsyncErrors;
 
 /***/ },
-/* 444 */
+/* 436 */
 /*!***********************************************************!*\
   !*** ./~/redux-form/lib/selectors/getFormSubmitErrors.js ***!
   \***********************************************************/
@@ -37109,7 +35869,7 @@
 	exports.default = createGetFormSubmitErrors;
 
 /***/ },
-/* 445 */
+/* 437 */
 /*!***********************************************!*\
   !*** ./~/redux-form/lib/selectors/isDirty.js ***!
   \***********************************************/
@@ -37121,7 +35881,7 @@
 	  value: true
 	});
 	
-	var _isPristine = __webpack_require__(/*! ./isPristine */ 446);
+	var _isPristine = __webpack_require__(/*! ./isPristine */ 438);
 	
 	var _isPristine2 = _interopRequireDefault(_isPristine);
 	
@@ -37139,7 +35899,7 @@
 	exports.default = createIsDirty;
 
 /***/ },
-/* 446 */
+/* 438 */
 /*!**************************************************!*\
   !*** ./~/redux-form/lib/selectors/isPristine.js ***!
   \**************************************************/
@@ -37170,7 +35930,7 @@
 	exports.default = createIsPristine;
 
 /***/ },
-/* 447 */
+/* 439 */
 /*!*************************************************!*\
   !*** ./~/redux-form/lib/selectors/isInvalid.js ***!
   \*************************************************/
@@ -37182,7 +35942,7 @@
 	  value: true
 	});
 	
-	var _isValid = __webpack_require__(/*! ./isValid */ 421);
+	var _isValid = __webpack_require__(/*! ./isValid */ 413);
 	
 	var _isValid2 = _interopRequireDefault(_isValid);
 	
@@ -37200,7 +35960,7 @@
 	exports.default = createIsInvalid;
 
 /***/ },
-/* 448 */
+/* 440 */
 /*!****************************************************!*\
   !*** ./~/redux-form/lib/selectors/isSubmitting.js ***!
   \****************************************************/
@@ -37227,7 +35987,7 @@
 	exports.default = createIsSubmitting;
 
 /***/ },
-/* 449 */
+/* 441 */
 /*!**********************************************************!*\
   !*** ./~/redux-form/lib/selectors/hasSubmitSucceeded.js ***!
   \**********************************************************/
@@ -37254,7 +36014,7 @@
 	exports.default = createHasSubmitSucceeded;
 
 /***/ },
-/* 450 */
+/* 442 */
 /*!*******************************************************!*\
   !*** ./~/redux-form/lib/selectors/hasSubmitFailed.js ***!
   \*******************************************************/
@@ -37281,7 +36041,7 @@
 	exports.default = createHasSubmitFailed;
 
 /***/ },
-/* 451 */
+/* 443 */
 /*!**********************************!*\
   !*** ./~/redux-form/lib/Form.js ***!
   \**********************************/
@@ -37346,7 +36106,7 @@
 	exports.default = Form;
 
 /***/ },
-/* 452 */
+/* 444 */
 /*!*****************************************!*\
   !*** ./~/redux-form/lib/FormSection.js ***!
   \*****************************************/
@@ -37366,7 +36126,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _prefixName = __webpack_require__(/*! ./util/prefixName */ 432);
+	var _prefixName = __webpack_require__(/*! ./util/prefixName */ 424);
 	
 	var _prefixName2 = _interopRequireDefault(_prefixName);
 	
@@ -37448,7 +36208,7 @@
 	exports.default = FormSection;
 
 /***/ },
-/* 453 */
+/* 445 */
 /*!***************************************!*\
   !*** ./~/redux-form/lib/propTypes.js ***!
   \***************************************/
@@ -37509,7 +36269,1430 @@
 	exports.default = propTypes;
 
 /***/ },
+/* 446 */
+/*!**********************************************!*\
+  !*** ./src/app/reducers/recipe-reducers.jsx ***!
+  \**********************************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var recipeReducer = function recipeReducer(state, action) {
+		if (state === undefined) {
+			return {
+				headerMessage: 'Adding a new recipe!',
+				id: 1,
+				Recipes: [{
+					RecipeName: 'Pizza',
+					RecipeDescription: 'A tasty treat for all involved.',
+					ID: 1
+				}]
+			};
+		}
+	
+		switch (action.type) {
+	
+			case 'OPEN_MODAL':
+				return Object.assign({}, state, {
+					isAddRecipeOpen: action.isAddRecipeOpen,
+					headerMessage: action.headerMessage
+				});
+	
+			case 'CLOSE_MODAL':
+				console.log('closing: ', state);
+				return Object.assign({}, state, {
+					isAddRecipeOpen: action.isAddRecipeOpen
+				});
+	
+			case 'CREATE_RECIPE':
+				console.log(action);
+				state.id++;
+				var recipes = state.Recipes.slice(0);
+				recipes.push({
+					RecipeName: action.recipeInfo.RecipeName,
+					RecipeDescription: action.recipeInfo.RecipeDescription,
+					RecipeIngredients: action.recipeInfo.recipeIngredients,
+					ID: state.id
+				});
+				return Object.assign({}, state, {
+					Recipes: recipes
+				});
+	
+			case 'EDIT_RECIPE':
+				console.log(action.ID);
+	
+			case 'DELETE_RECIPE':
+				return Object.assign({}, state, {
+					Recipes: state.Recipes.filter(function (recipe) {
+						return recipe.ID != action.ID;
+					})
+				});
+	
+			default:
+				return state;
+		}
+	};
+	exports.default = recipeReducer;
+
+/***/ },
+/* 447 */
+/*!************************************!*\
+  !*** ./~/react-modal/lib/index.js ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(/*! ./components/Modal */ 448);
+	
+
+
+/***/ },
+/* 448 */
+/*!***********************************************!*\
+  !*** ./~/react-modal/lib/components/Modal.js ***!
+  \***********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {var React = __webpack_require__(/*! react */ 1);
+	var ReactDOM = __webpack_require__(/*! react-dom */ 32);
+	var ExecutionEnvironment = __webpack_require__(/*! exenv */ 449);
+	var ModalPortal = React.createFactory(__webpack_require__(/*! ./ModalPortal */ 450));
+	var ariaAppHider = __webpack_require__(/*! ../helpers/ariaAppHider */ 455);
+	var elementClass = __webpack_require__(/*! element-class */ 456);
+	var renderSubtreeIntoContainer = __webpack_require__(/*! react-dom */ 32).unstable_renderSubtreeIntoContainer;
+	var Assign = __webpack_require__(/*! lodash.assign */ 454);
+	
+	var SafeHTMLElement = ExecutionEnvironment.canUseDOM ? window.HTMLElement : {};
+	var AppElement = ExecutionEnvironment.canUseDOM ? document.body : {appendChild: function() {}};
+	
+	function getParentElement(parentSelector) {
+	  return parentSelector();
+	}
+	
+	var Modal = React.createClass({
+	
+	  displayName: 'Modal',
+	  statics: {
+	    setAppElement: function(element) {
+	        AppElement = ariaAppHider.setElement(element);
+	    },
+	    injectCSS: function() {
+	      "production" !== process.env.NODE_ENV
+	        && console.warn('React-Modal: injectCSS has been deprecated ' +
+	                        'and no longer has any effect. It will be removed in a later version');
+	    }
+	  },
+	
+	  propTypes: {
+	    isOpen: React.PropTypes.bool.isRequired,
+	    style: React.PropTypes.shape({
+	      content: React.PropTypes.object,
+	      overlay: React.PropTypes.object
+	    }),
+	    portalClassName: React.PropTypes.string,
+	    appElement: React.PropTypes.instanceOf(SafeHTMLElement),
+	    onAfterOpen: React.PropTypes.func,
+	    onRequestClose: React.PropTypes.func,
+	    closeTimeoutMS: React.PropTypes.number,
+	    ariaHideApp: React.PropTypes.bool,
+	    shouldCloseOnOverlayClick: React.PropTypes.bool,
+	    parentSelector: React.PropTypes.func,
+	    role: React.PropTypes.string,
+	    contentLabel: React.PropTypes.string.isRequired
+	  },
+	
+	  getDefaultProps: function () {
+	    return {
+	      isOpen: false,
+	      portalClassName: 'ReactModalPortal',
+	      ariaHideApp: true,
+	      closeTimeoutMS: 0,
+	      shouldCloseOnOverlayClick: true,
+	      parentSelector: function () { return document.body; }
+	    };
+	  },
+	
+	  componentDidMount: function() {
+	    this.node = document.createElement('div');
+	    this.node.className = this.props.portalClassName;
+	
+	    var parent = getParentElement(this.props.parentSelector);
+	    parent.appendChild(this.node);
+	    this.renderPortal(this.props);
+	  },
+	
+	  componentWillReceiveProps: function(newProps) {
+	    var currentParent = getParentElement(this.props.parentSelector);
+	    var newParent = getParentElement(newProps.parentSelector);
+	
+	    if(newParent !== currentParent) {
+	      currentParent.removeChild(this.node);
+	      newParent.appendChild(this.node);
+	    }
+	
+	    this.renderPortal(newProps);
+	  },
+	
+	  componentWillUnmount: function() {
+	    if (this.props.ariaHideApp) {
+	      ariaAppHider.show(this.props.appElement);
+	    }
+	
+	    ReactDOM.unmountComponentAtNode(this.node);
+	    var parent = getParentElement(this.props.parentSelector);
+	    parent.removeChild(this.node);
+	    elementClass(document.body).remove('ReactModal__Body--open');
+	  },
+	
+	  renderPortal: function(props) {
+	    if (props.isOpen) {
+	      elementClass(document.body).add('ReactModal__Body--open');
+	    } else {
+	      elementClass(document.body).remove('ReactModal__Body--open');
+	    }
+	
+	    if (props.ariaHideApp) {
+	      ariaAppHider.toggle(props.isOpen, props.appElement);
+	    }
+	
+	    this.portal = renderSubtreeIntoContainer(this, ModalPortal(Assign({}, props, {defaultStyles: Modal.defaultStyles})), this.node);
+	  },
+	
+	  render: function () {
+	    return React.DOM.noscript();
+	  }
+	});
+	
+	Modal.defaultStyles = {
+	  overlay: {
+	    position        : 'fixed',
+	    top             : 0,
+	    left            : 0,
+	    right           : 0,
+	    bottom          : 0,
+	    backgroundColor : 'rgba(255, 255, 255, 0.75)'
+	  },
+	  content: {
+	    position                : 'absolute',
+	    top                     : '40px',
+	    left                    : '40px',
+	    right                   : '40px',
+	    bottom                  : '40px',
+	    border                  : '1px solid #ccc',
+	    background              : '#fff',
+	    overflow                : 'auto',
+	    WebkitOverflowScrolling : 'touch',
+	    borderRadius            : '4px',
+	    outline                 : 'none',
+	    padding                 : '20px'
+	  }
+	}
+	
+	module.exports = Modal
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../webpack/~/node-libs-browser/~/process/browser.js */ 3)))
+
+/***/ },
+/* 449 */
+/*!****************************************!*\
+  !*** ./~/react-modal/~/exenv/index.js ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2015 Jed Watson.
+	  Based on code that is Copyright 2013-2015, Facebook, Inc.
+	  All rights reserved.
+	*/
+	
+	(function () {
+		'use strict';
+	
+		var canUseDOM = !!(
+			typeof window !== 'undefined' &&
+			window.document &&
+			window.document.createElement
+		);
+	
+		var ExecutionEnvironment = {
+	
+			canUseDOM: canUseDOM,
+	
+			canUseWorkers: typeof Worker !== 'undefined',
+	
+			canUseEventListeners:
+				canUseDOM && !!(window.addEventListener || window.attachEvent),
+	
+			canUseViewport: canUseDOM && !!window.screen
+	
+		};
+	
+		if (true) {
+			!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return ExecutionEnvironment;
+			}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else if (typeof module !== 'undefined' && module.exports) {
+			module.exports = ExecutionEnvironment;
+		} else {
+			window.ExecutionEnvironment = ExecutionEnvironment;
+		}
+	
+	}());
+
+
+/***/ },
+/* 450 */
+/*!*****************************************************!*\
+  !*** ./~/react-modal/lib/components/ModalPortal.js ***!
+  \*****************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(/*! react */ 1);
+	var div = React.DOM.div;
+	var focusManager = __webpack_require__(/*! ../helpers/focusManager */ 451);
+	var scopeTab = __webpack_require__(/*! ../helpers/scopeTab */ 453);
+	var Assign = __webpack_require__(/*! lodash.assign */ 454);
+	
+	// so that our CSS is statically analyzable
+	var CLASS_NAMES = {
+	  overlay: {
+	    base: 'ReactModal__Overlay',
+	    afterOpen: 'ReactModal__Overlay--after-open',
+	    beforeClose: 'ReactModal__Overlay--before-close'
+	  },
+	  content: {
+	    base: 'ReactModal__Content',
+	    afterOpen: 'ReactModal__Content--after-open',
+	    beforeClose: 'ReactModal__Content--before-close'
+	  }
+	};
+	
+	var ModalPortal = module.exports = React.createClass({
+	
+	  displayName: 'ModalPortal',
+	  shouldClose: null,
+	
+	  getDefaultProps: function() {
+	    return {
+	      style: {
+	        overlay: {},
+	        content: {}
+	      }
+	    };
+	  },
+	
+	  getInitialState: function() {
+	    return {
+	      afterOpen: false,
+	      beforeClose: false
+	    };
+	  },
+	
+	  componentDidMount: function() {
+	    // Focus needs to be set when mounting and already open
+	    if (this.props.isOpen) {
+	      this.setFocusAfterRender(true);
+	      this.open();
+	    }
+	  },
+	
+	  componentWillUnmount: function() {
+	    clearTimeout(this.closeTimer);
+	  },
+	
+	  componentWillReceiveProps: function(newProps) {
+	    // Focus only needs to be set once when the modal is being opened
+	    if (!this.props.isOpen && newProps.isOpen) {
+	      this.setFocusAfterRender(true);
+	      this.open();
+	    } else if (this.props.isOpen && !newProps.isOpen) {
+	      this.close();
+	    }
+	  },
+	
+	  componentDidUpdate: function () {
+	    if (this.focusAfterRender) {
+	      this.focusContent();
+	      this.setFocusAfterRender(false);
+	    }
+	  },
+	
+	  setFocusAfterRender: function (focus) {
+	    this.focusAfterRender = focus;
+	  },
+	
+	  open: function() {
+	    if (this.state.afterOpen && this.state.beforeClose) {
+	      clearTimeout(this.closeTimer);
+	      this.setState({ beforeClose: false });
+	    } else {
+	      focusManager.setupScopedFocus(this.node);
+	      focusManager.markForFocusLater();
+	      this.setState({isOpen: true}, function() {
+	        this.setState({afterOpen: true});
+	
+	        if (this.props.isOpen && this.props.onAfterOpen) {
+	          this.props.onAfterOpen();
+	        }
+	      }.bind(this));
+	    }
+	  },
+	
+	  close: function() {
+	    if (this.props.closeTimeoutMS > 0)
+	      this.closeWithTimeout();
+	    else
+	      this.closeWithoutTimeout();
+	  },
+	
+	  focusContent: function() {
+	    // Don't steal focus from inner elements
+	    if (!this.contentHasFocus()) {
+	      this.refs.content.focus();
+	    }
+	  },
+	
+	  closeWithTimeout: function() {
+	    this.setState({beforeClose: true}, function() {
+	      this.closeTimer = setTimeout(this.closeWithoutTimeout, this.props.closeTimeoutMS);
+	    }.bind(this));
+	  },
+	
+	  closeWithoutTimeout: function() {
+	    this.setState({
+	      beforeClose: false,
+	      isOpen: false,
+	      afterOpen: false,
+	    }, this.afterClose);
+	  },
+	
+	  afterClose: function() {
+	    focusManager.returnFocus();
+	    focusManager.teardownScopedFocus();
+	  },
+	
+	  handleKeyDown: function(event) {
+	    if (event.keyCode == 9 /*tab*/) scopeTab(this.refs.content, event);
+	    if (event.keyCode == 27 /*esc*/) {
+	      event.preventDefault();
+	      this.requestClose(event);
+	    }
+	  },
+	
+	  handleOverlayMouseDown: function(event) {
+	    if (this.shouldClose === null) {
+	      this.shouldClose = true;
+	    }
+	  },
+	
+	  handleOverlayMouseUp: function(event) {
+	    if (this.shouldClose && this.props.shouldCloseOnOverlayClick) {
+	      if (this.ownerHandlesClose())
+	        this.requestClose(event);
+	      else
+	        this.focusContent();
+	    }
+	    this.shouldClose = null;
+	  },
+	
+	  handleContentMouseDown: function(event) {
+	    this.shouldClose = false;
+	  },
+	
+	  handleContentMouseUp: function(event) {
+	    this.shouldClose = false;
+	  },
+	
+	  requestClose: function(event) {
+	    if (this.ownerHandlesClose())
+	      this.props.onRequestClose(event);
+	  },
+	
+	  ownerHandlesClose: function() {
+	    return this.props.onRequestClose;
+	  },
+	
+	  shouldBeClosed: function() {
+	    return !this.props.isOpen && !this.state.beforeClose;
+	  },
+	
+	  contentHasFocus: function() {
+	    return document.activeElement === this.refs.content || this.refs.content.contains(document.activeElement);
+	  },
+	
+	  buildClassName: function(which, additional) {
+	    var className = CLASS_NAMES[which].base;
+	    if (this.state.afterOpen)
+	      className += ' '+CLASS_NAMES[which].afterOpen;
+	    if (this.state.beforeClose)
+	      className += ' '+CLASS_NAMES[which].beforeClose;
+	    return additional ? className + ' ' + additional : className;
+	  },
+	
+	  render: function() {
+	    var contentStyles = (this.props.className) ? {} : this.props.defaultStyles.content;
+	    var overlayStyles = (this.props.overlayClassName) ? {} : this.props.defaultStyles.overlay;
+	
+	    return this.shouldBeClosed() ? div() : (
+	      div({
+	        ref: "overlay",
+	        className: this.buildClassName('overlay', this.props.overlayClassName),
+	        style: Assign({}, overlayStyles, this.props.style.overlay || {}),
+	        onMouseDown: this.handleOverlayMouseDown,
+	        onMouseUp: this.handleOverlayMouseUp
+	      },
+	        div({
+	          ref: "content",
+	          style: Assign({}, contentStyles, this.props.style.content || {}),
+	          className: this.buildClassName('content', this.props.className),
+	          tabIndex: "-1",
+	          onKeyDown: this.handleKeyDown,
+	          onMouseDown: this.handleContentMouseDown,
+	          onMouseUp: this.handleContentMouseUp,
+	          role: this.props.role,
+	          "aria-label": this.props.contentLabel
+	        },
+	          this.props.children
+	        )
+	      )
+	    );
+	  }
+	});
+
+
+/***/ },
+/* 451 */
+/*!***************************************************!*\
+  !*** ./~/react-modal/lib/helpers/focusManager.js ***!
+  \***************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var findTabbable = __webpack_require__(/*! ../helpers/tabbable */ 452);
+	var modalElement = null;
+	var focusLaterElement = null;
+	var needToFocus = false;
+	
+	function handleBlur(event) {
+	  needToFocus = true;
+	}
+	
+	function handleFocus(event) {
+	  if (needToFocus) {
+	    needToFocus = false;
+	    if (!modalElement) {
+	      return;
+	    }
+	    // need to see how jQuery shims document.on('focusin') so we don't need the
+	    // setTimeout, firefox doesn't support focusin, if it did, we could focus
+	    // the element outside of a setTimeout. Side-effect of this implementation 
+	    // is that the document.body gets focus, and then we focus our element right 
+	    // after, seems fine.
+	    setTimeout(function() {
+	      if (modalElement.contains(document.activeElement))
+	        return;
+	      var el = (findTabbable(modalElement)[0] || modalElement);
+	      el.focus();
+	    }, 0);
+	  }
+	}
+	
+	exports.markForFocusLater = function() {
+	  focusLaterElement = document.activeElement;
+	};
+	
+	exports.returnFocus = function() {
+	  try {
+	    focusLaterElement.focus();
+	  }
+	  catch (e) {
+	    console.warn('You tried to return focus to '+focusLaterElement+' but it is not in the DOM anymore');
+	  }
+	  focusLaterElement = null;
+	};
+	
+	exports.setupScopedFocus = function(element) {
+	  modalElement = element;
+	
+	  if (window.addEventListener) {
+	    window.addEventListener('blur', handleBlur, false);
+	    document.addEventListener('focus', handleFocus, true);
+	  } else {
+	    window.attachEvent('onBlur', handleBlur);
+	    document.attachEvent('onFocus', handleFocus);
+	  }
+	};
+	
+	exports.teardownScopedFocus = function() {
+	  modalElement = null;
+	
+	  if (window.addEventListener) {
+	    window.removeEventListener('blur', handleBlur);
+	    document.removeEventListener('focus', handleFocus);
+	  } else {
+	    window.detachEvent('onBlur', handleBlur);
+	    document.detachEvent('onFocus', handleFocus);
+	  }
+	};
+	
+	
+
+
+/***/ },
+/* 452 */
+/*!***********************************************!*\
+  !*** ./~/react-modal/lib/helpers/tabbable.js ***!
+  \***********************************************/
+/***/ function(module, exports) {
+
+	/*!
+	 * Adapted from jQuery UI core
+	 *
+	 * http://jqueryui.com
+	 *
+	 * Copyright 2014 jQuery Foundation and other contributors
+	 * Released under the MIT license.
+	 * http://jquery.org/license
+	 *
+	 * http://api.jqueryui.com/category/ui-core/
+	 */
+	
+	function focusable(element, isTabIndexNotNaN) {
+	  var nodeName = element.nodeName.toLowerCase();
+	  return (/input|select|textarea|button|object/.test(nodeName) ?
+	    !element.disabled :
+	    "a" === nodeName ?
+	      element.href || isTabIndexNotNaN :
+	      isTabIndexNotNaN) && visible(element);
+	}
+	
+	function hidden(el) {
+	  return (el.offsetWidth <= 0 && el.offsetHeight <= 0) ||
+	    el.style.display === 'none';
+	}
+	
+	function visible(element) {
+	  while (element) {
+	    if (element === document.body) break;
+	    if (hidden(element)) return false;
+	    element = element.parentNode;
+	  }
+	  return true;
+	}
+	
+	function tabbable(element) {
+	  var tabIndex = element.getAttribute('tabindex');
+	  if (tabIndex === null) tabIndex = undefined;
+	  var isTabIndexNaN = isNaN(tabIndex);
+	  return (isTabIndexNaN || tabIndex >= 0) && focusable(element, !isTabIndexNaN);
+	}
+	
+	function findTabbableDescendants(element) {
+	  return [].slice.call(element.querySelectorAll('*'), 0).filter(function(el) {
+	    return tabbable(el);
+	  });
+	}
+	
+	module.exports = findTabbableDescendants;
+	
+
+
+/***/ },
+/* 453 */
+/*!***********************************************!*\
+  !*** ./~/react-modal/lib/helpers/scopeTab.js ***!
+  \***********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var findTabbable = __webpack_require__(/*! ../helpers/tabbable */ 452);
+	
+	module.exports = function(node, event) {
+	  var tabbable = findTabbable(node);
+	  if (!tabbable.length) {
+	      event.preventDefault();
+	      return;
+	  }
+	  var finalTabbable = tabbable[event.shiftKey ? 0 : tabbable.length - 1];
+	  var leavingFinalTabbable = (
+	    finalTabbable === document.activeElement ||
+	    // handle immediate shift+tab after opening with mouse
+	    node === document.activeElement
+	  );
+	  if (!leavingFinalTabbable) return;
+	  event.preventDefault();
+	  var target = tabbable[event.shiftKey ? tabbable.length - 1 : 0];
+	  target.focus();
+	};
+
+
+/***/ },
 /* 454 */
+/*!************************************************!*\
+  !*** ./~/react-modal/~/lodash.assign/index.js ***!
+  \************************************************/
+/***/ function(module, exports) {
+
+	/**
+	 * lodash (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modularize exports="npm" -o ./`
+	 * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+	 * Released under MIT license <https://lodash.com/license>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 */
+	
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]',
+	    funcTag = '[object Function]',
+	    genTag = '[object GeneratorFunction]';
+	
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^(?:0|[1-9]\d*)$/;
+	
+	/**
+	 * A faster alternative to `Function#apply`, this function invokes `func`
+	 * with the `this` binding of `thisArg` and the arguments of `args`.
+	 *
+	 * @private
+	 * @param {Function} func The function to invoke.
+	 * @param {*} thisArg The `this` binding of `func`.
+	 * @param {Array} args The arguments to invoke `func` with.
+	 * @returns {*} Returns the result of `func`.
+	 */
+	function apply(func, thisArg, args) {
+	  switch (args.length) {
+	    case 0: return func.call(thisArg);
+	    case 1: return func.call(thisArg, args[0]);
+	    case 2: return func.call(thisArg, args[0], args[1]);
+	    case 3: return func.call(thisArg, args[0], args[1], args[2]);
+	  }
+	  return func.apply(thisArg, args);
+	}
+	
+	/**
+	 * The base implementation of `_.times` without support for iteratee shorthands
+	 * or max array length checks.
+	 *
+	 * @private
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the array of results.
+	 */
+	function baseTimes(n, iteratee) {
+	  var index = -1,
+	      result = Array(n);
+	
+	  while (++index < n) {
+	    result[index] = iteratee(index);
+	  }
+	  return result;
+	}
+	
+	/**
+	 * Creates a unary function that invokes `func` with its argument transformed.
+	 *
+	 * @private
+	 * @param {Function} func The function to wrap.
+	 * @param {Function} transform The argument transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overArg(func, transform) {
+	  return function(arg) {
+	    return func(transform(arg));
+	  };
+	}
+	
+	/** Used for built-in method references. */
+	var objectProto = Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/** Built-in value references. */
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+	
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeKeys = overArg(Object.keys, Object),
+	    nativeMax = Math.max;
+	
+	/** Detect if properties shadowing those on `Object.prototype` are non-enumerable. */
+	var nonEnumShadows = !propertyIsEnumerable.call({ 'valueOf': 1 }, 'valueOf');
+	
+	/**
+	 * Creates an array of the enumerable property names of the array-like `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @param {boolean} inherited Specify returning inherited property names.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function arrayLikeKeys(value, inherited) {
+	  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
+	  // Safari 9 makes `arguments.length` enumerable in strict mode.
+	  var result = (isArray(value) || isArguments(value))
+	    ? baseTimes(value.length, String)
+	    : [];
+	
+	  var length = result.length,
+	      skipIndexes = !!length;
+	
+	  for (var key in value) {
+	    if ((inherited || hasOwnProperty.call(value, key)) &&
+	        !(skipIndexes && (key == 'length' || isIndex(key, length)))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+	
+	/**
+	 * Assigns `value` to `key` of `object` if the existing value is not equivalent
+	 * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	 * for equality comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to modify.
+	 * @param {string} key The key of the property to assign.
+	 * @param {*} value The value to assign.
+	 */
+	function assignValue(object, key, value) {
+	  var objValue = object[key];
+	  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
+	      (value === undefined && !(key in object))) {
+	    object[key] = value;
+	  }
+	}
+	
+	/**
+	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeys(object) {
+	  if (!isPrototype(object)) {
+	    return nativeKeys(object);
+	  }
+	  var result = [];
+	  for (var key in Object(object)) {
+	    if (hasOwnProperty.call(object, key) && key != 'constructor') {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+	
+	/**
+	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
+	 *
+	 * @private
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseRest(func, start) {
+	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+	  return function() {
+	    var args = arguments,
+	        index = -1,
+	        length = nativeMax(args.length - start, 0),
+	        array = Array(length);
+	
+	    while (++index < length) {
+	      array[index] = args[start + index];
+	    }
+	    index = -1;
+	    var otherArgs = Array(start + 1);
+	    while (++index < start) {
+	      otherArgs[index] = args[index];
+	    }
+	    otherArgs[start] = array;
+	    return apply(func, this, otherArgs);
+	  };
+	}
+	
+	/**
+	 * Copies properties of `source` to `object`.
+	 *
+	 * @private
+	 * @param {Object} source The object to copy properties from.
+	 * @param {Array} props The property identifiers to copy.
+	 * @param {Object} [object={}] The object to copy properties to.
+	 * @param {Function} [customizer] The function to customize copied values.
+	 * @returns {Object} Returns `object`.
+	 */
+	function copyObject(source, props, object, customizer) {
+	  object || (object = {});
+	
+	  var index = -1,
+	      length = props.length;
+	
+	  while (++index < length) {
+	    var key = props[index];
+	
+	    var newValue = customizer
+	      ? customizer(object[key], source[key], key, object, source)
+	      : undefined;
+	
+	    assignValue(object, key, newValue === undefined ? source[key] : newValue);
+	  }
+	  return object;
+	}
+	
+	/**
+	 * Creates a function like `_.assign`.
+	 *
+	 * @private
+	 * @param {Function} assigner The function to assign values.
+	 * @returns {Function} Returns the new assigner function.
+	 */
+	function createAssigner(assigner) {
+	  return baseRest(function(object, sources) {
+	    var index = -1,
+	        length = sources.length,
+	        customizer = length > 1 ? sources[length - 1] : undefined,
+	        guard = length > 2 ? sources[2] : undefined;
+	
+	    customizer = (assigner.length > 3 && typeof customizer == 'function')
+	      ? (length--, customizer)
+	      : undefined;
+	
+	    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+	      customizer = length < 3 ? undefined : customizer;
+	      length = 1;
+	    }
+	    object = Object(object);
+	    while (++index < length) {
+	      var source = sources[index];
+	      if (source) {
+	        assigner(object, source, index, customizer);
+	      }
+	    }
+	    return object;
+	  });
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return !!length &&
+	    (typeof value == 'number' || reIsUint.test(value)) &&
+	    (value > -1 && value % 1 == 0 && value < length);
+	}
+	
+	/**
+	 * Checks if the given arguments are from an iteratee call.
+	 *
+	 * @private
+	 * @param {*} value The potential iteratee value argument.
+	 * @param {*} index The potential iteratee index or key argument.
+	 * @param {*} object The potential iteratee object argument.
+	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
+	 *  else `false`.
+	 */
+	function isIterateeCall(value, index, object) {
+	  if (!isObject(object)) {
+	    return false;
+	  }
+	  var type = typeof index;
+	  if (type == 'number'
+	        ? (isArrayLike(object) && isIndex(index, object.length))
+	        : (type == 'string' && index in object)
+	      ) {
+	    return eq(object[index], value);
+	  }
+	  return false;
+	}
+	
+	/**
+	 * Checks if `value` is likely a prototype object.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+	 */
+	function isPrototype(value) {
+	  var Ctor = value && value.constructor,
+	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+	
+	  return value === proto;
+	}
+	
+	/**
+	 * Performs a
+	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	 * comparison between two values to determine if they are equivalent.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 * var other = { 'a': 1 };
+	 *
+	 * _.eq(object, object);
+	 * // => true
+	 *
+	 * _.eq(object, other);
+	 * // => false
+	 *
+	 * _.eq('a', 'a');
+	 * // => true
+	 *
+	 * _.eq('a', Object('a'));
+	 * // => false
+	 *
+	 * _.eq(NaN, NaN);
+	 * // => true
+	 */
+	function eq(value, other) {
+	  return value === other || (value !== value && other !== other);
+	}
+	
+	/**
+	 * Checks if `value` is likely an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	function isArguments(value) {
+	  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
+	  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
+	    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
+	}
+	
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray = Array.isArray;
+	
+	/**
+	 * Checks if `value` is array-like. A value is considered array-like if it's
+	 * not a function and has a `value.length` that's an integer greater than or
+	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLike(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLike('abc');
+	 * // => true
+	 *
+	 * _.isArrayLike(_.noop);
+	 * // => false
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength(value.length) && !isFunction(value);
+	}
+	
+	/**
+	 * This method is like `_.isArrayLike` except that it also checks if `value`
+	 * is an object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array-like object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArrayLikeObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject('abc');
+	 * // => false
+	 *
+	 * _.isArrayLikeObject(_.noop);
+	 * // => false
+	 */
+	function isArrayLikeObject(value) {
+	  return isObjectLike(value) && isArrayLike(value);
+	}
+	
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction(value) {
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in Safari 8-9 which returns 'object' for typed array and other constructors.
+	  var tag = isObject(value) ? objectToString.call(value) : '';
+	  return tag == funcTag || tag == genTag;
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This method is loosely based on
+	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 * @example
+	 *
+	 * _.isLength(3);
+	 * // => true
+	 *
+	 * _.isLength(Number.MIN_VALUE);
+	 * // => false
+	 *
+	 * _.isLength(Infinity);
+	 * // => false
+	 *
+	 * _.isLength('3');
+	 * // => false
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' &&
+	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+	
+	/**
+	 * Checks if `value` is the
+	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(_.noop);
+	 * // => true
+	 *
+	 * _.isObject(null);
+	 * // => false
+	 */
+	function isObject(value) {
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+	
+	/**
+	 * Assigns own enumerable string keyed properties of source objects to the
+	 * destination object. Source objects are applied from left to right.
+	 * Subsequent sources overwrite property assignments of previous sources.
+	 *
+	 * **Note:** This method mutates `object` and is loosely based on
+	 * [`Object.assign`](https://mdn.io/Object/assign).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.10.0
+	 * @category Object
+	 * @param {Object} object The destination object.
+	 * @param {...Object} [sources] The source objects.
+	 * @returns {Object} Returns `object`.
+	 * @see _.assignIn
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 * }
+	 *
+	 * function Bar() {
+	 *   this.c = 3;
+	 * }
+	 *
+	 * Foo.prototype.b = 2;
+	 * Bar.prototype.d = 4;
+	 *
+	 * _.assign({ 'a': 0 }, new Foo, new Bar);
+	 * // => { 'a': 1, 'c': 3 }
+	 */
+	var assign = createAssigner(function(object, source) {
+	  if (nonEnumShadows || isPrototype(source) || isArrayLike(source)) {
+	    copyObject(source, keys(source), object);
+	    return;
+	  }
+	  for (var key in source) {
+	    if (hasOwnProperty.call(source, key)) {
+	      assignValue(object, key, source[key]);
+	    }
+	  }
+	});
+	
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	function keys(object) {
+	  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+	}
+	
+	module.exports = assign;
+
+
+/***/ },
+/* 455 */
+/*!***************************************************!*\
+  !*** ./~/react-modal/lib/helpers/ariaAppHider.js ***!
+  \***************************************************/
+/***/ function(module, exports) {
+
+	var _element = typeof document !== 'undefined' ? document.body : null;
+	
+	function setElement(element) {
+	  if (typeof element === 'string') {
+	    var el = document.querySelectorAll(element);
+	    element = 'length' in el ? el[0] : el;
+	  }
+	  _element = element || _element;
+	  return _element;
+	}
+	
+	function hide(appElement) {
+	  validateElement(appElement);
+	  (appElement || _element).setAttribute('aria-hidden', 'true');
+	}
+	
+	function show(appElement) {
+	  validateElement(appElement);
+	  (appElement || _element).removeAttribute('aria-hidden');
+	}
+	
+	function toggle(shouldHide, appElement) {
+	  if (shouldHide)
+	    hide(appElement);
+	  else
+	    show(appElement);
+	}
+	
+	function validateElement(appElement) {
+	  if (!appElement && !_element)
+	    throw new Error('react-modal: You must set an element with `Modal.setAppElement(el)` to make this accessible');
+	}
+	
+	function resetForTesting() {
+	  _element = document.body;
+	}
+	
+	exports.toggle = toggle;
+	exports.setElement = setElement;
+	exports.show = show;
+	exports.hide = hide;
+	exports.resetForTesting = resetForTesting;
+
+
+/***/ },
+/* 456 */
+/*!************************************************!*\
+  !*** ./~/react-modal/~/element-class/index.js ***!
+  \************************************************/
+/***/ function(module, exports) {
+
+	module.exports = function(opts) {
+	  return new ElementClass(opts)
+	}
+	
+	function indexOf(arr, prop) {
+	  if (arr.indexOf) return arr.indexOf(prop)
+	  for (var i = 0, len = arr.length; i < len; i++)
+	    if (arr[i] === prop) return i
+	  return -1
+	}
+	
+	function ElementClass(opts) {
+	  if (!(this instanceof ElementClass)) return new ElementClass(opts)
+	  var self = this
+	  if (!opts) opts = {}
+	
+	  // similar doing instanceof HTMLElement but works in IE8
+	  if (opts.nodeType) opts = {el: opts}
+	
+	  this.opts = opts
+	  this.el = opts.el || document.body
+	  if (typeof this.el !== 'object') this.el = document.querySelector(this.el)
+	}
+	
+	ElementClass.prototype.add = function(className) {
+	  var el = this.el
+	  if (!el) return
+	  if (el.className === "") return el.className = className
+	  var classes = el.className.split(' ')
+	  if (indexOf(classes, className) > -1) return classes
+	  classes.push(className)
+	  el.className = classes.join(' ')
+	  return classes
+	}
+	
+	ElementClass.prototype.remove = function(className) {
+	  var el = this.el
+	  if (!el) return
+	  if (el.className === "") return
+	  var classes = el.className.split(' ')
+	  var idx = indexOf(classes, className)
+	  if (idx > -1) classes.splice(idx, 1)
+	  el.className = classes.join(' ')
+	  return classes
+	}
+	
+	ElementClass.prototype.has = function(className) {
+	  var el = this.el
+	  if (!el) return
+	  var classes = el.className.split(' ')
+	  return indexOf(classes, className) > -1
+	}
+	
+	ElementClass.prototype.toggle = function(className) {
+	  var el = this.el
+	  if (!el) return
+	  if (this.has(className)) this.remove(className)
+	  else this.add(className)
+	}
+
+
+/***/ },
+/* 457 */
 /*!********************************************************!*\
   !*** ./src/app/containers/addRecipeForm-container.jsx ***!
   \********************************************************/
@@ -37523,13 +37706,13 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
 	
-	var _addRecipeFormComponent = __webpack_require__(/*! ../components/addRecipeForm-component.jsx */ 455);
+	var _addRecipeFormComponent = __webpack_require__(/*! ../components/addRecipeForm-component.jsx */ 458);
 	
 	var _addRecipeFormComponent2 = _interopRequireDefault(_addRecipeFormComponent);
 	
-	var _recipeIndexActions = __webpack_require__(/*! ../actions/recipeIndex-actions.jsx */ 456);
+	var _recipeIndexActions = __webpack_require__(/*! ../actions/recipeIndex-actions.jsx */ 234);
 	
-	var _reduxForm = __webpack_require__(/*! redux-form */ 244);
+	var _reduxForm = __webpack_require__(/*! redux-form */ 236);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -37552,7 +37735,7 @@
 	})(_addRecipeFormComponent2.default));
 
 /***/ },
-/* 455 */
+/* 458 */
 /*!********************************************************!*\
   !*** ./src/app/components/addRecipeForm-component.jsx ***!
   \********************************************************/
@@ -37570,7 +37753,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reduxForm = __webpack_require__(/*! redux-form */ 244);
+	var _reduxForm = __webpack_require__(/*! redux-form */ 236);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -37676,140 +37859,6 @@
 	};
 	
 	exports.default = RecipeForm;
-
-/***/ },
-/* 456 */
-/*!*************************************************!*\
-  !*** ./src/app/actions/recipeIndex-actions.jsx ***!
-  \*************************************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	var initState = exports.initState = function initState() {
-		return {
-			type: 'INITIALISE',
-			Recipes: []
-		};
-	};
-	
-	var openRecipeModal = exports.openRecipeModal = function openRecipeModal() {
-		return {
-			type: 'OPEN_MODAL',
-			isAddRecipeOpen: true,
-			headerMessage: "Adding a new recipe!"
-		};
-	};
-	
-	var closeRecipeModal = exports.closeRecipeModal = function closeRecipeModal() {
-		return {
-			type: 'CLOSE_MODAL',
-			isAddRecipeOpen: false
-		};
-	};
-	
-	//add it to the object at a new index? do we need to do that? or just add it to the bottom of an object?
-	var addNewRecipe = exports.addNewRecipe = function addNewRecipe(fields) {
-		console.log(fields);
-		return {
-			type: 'CREATE_RECIPE',
-			recipeInfo: fields
-		};
-	};
-	
-	var editRecipe = exports.editRecipe = function editRecipe(recipe) {
-		//take in a recipe, allow you to change parts of it.
-	};
-	
-	var deleteRecipe = exports.deleteRecipe = function deleteRecipe(recipe) {
-		//take in recipe, pop box to ask to confirm if we want to delete it or whatever.
-	};
-
-/***/ },
-/* 457 */
-/*!************************************!*\
-  !*** ./src/app/reducers/index.jsx ***!
-  \************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _redux = __webpack_require__(/*! redux */ 194);
-	
-	var _reduxForm = __webpack_require__(/*! redux-form */ 244);
-	
-	var _recipeReducers = __webpack_require__(/*! ./recipe-reducers.jsx */ 458);
-	
-	var _recipeReducers2 = _interopRequireDefault(_recipeReducers);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var rootReducer = (0, _redux.combineReducers)({
-		recipeReducer: _recipeReducers2.default,
-		form: _reduxForm.reducer
-	});
-	
-	exports.default = rootReducer;
-
-/***/ },
-/* 458 */
-/*!**********************************************!*\
-  !*** ./src/app/reducers/recipe-reducers.jsx ***!
-  \**********************************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	var recipeReducer = function recipeReducer(state, action) {
-		if (state === undefined) {
-			return {
-				Recipes: [{
-					RecipeName: 'Pizza',
-					RecipeDescription: 'A tasty, treat for all involved.'
-				}]
-			};
-		}
-	
-		switch (action.type) {
-	
-			case 'OPEN_MODAL':
-				return Object.assign({}, state, {
-					isAddRecipeOpen: action.isAddRecipeOpen,
-					headerMessage: action.headerMessage
-				});
-	
-			case 'CLOSE_MODAL':
-				console.log('closing: ', state);
-				return Object.assign({}, state, {
-					isAddRecipeOpen: action.isAddRecipeOpen
-				});
-	
-			case 'CREATE_RECIPE':
-				var recipes = state.Recipes.slice(0);
-				recipes.push(action.recipeInfo);
-				return Object.assign({}, state, {
-					Recipes: recipes
-				});
-	
-			case 'EDIT_RECIPE':
-	
-			case 'DELETE_RECIPE':
-	
-			default:
-				return state;
-		}
-	};
-	exports.default = recipeReducer;
 
 /***/ }
 /******/ ]);
