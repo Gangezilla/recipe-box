@@ -2,12 +2,14 @@ const recipeReducer = (state, action) => {
 	if (state === undefined) {
 		return {
 			headerMessage: 'Adding a new recipe!',
-			id: 1,
+			buttonMessage: 'Create',
+			id: 0,
+			modalStatus: 'add',
 			Recipes: [
 				{
 					RecipeName: 'Pizza',
 					RecipeDescription: 'A tasty treat for all involved.',
-					ID: 1,
+					ID: 0,
 				}
 			],
 		}
@@ -19,12 +21,21 @@ const recipeReducer = (state, action) => {
 			return Object.assign({}, state, {
 				isAddRecipeOpen: action.isAddRecipeOpen,
 				headerMessage: action.headerMessage,
+				buttonMessage: action.buttonMessage,
+				modalStatus: action.modalStatus,
+			})
+
+		case 'EDIT_MODAL': 
+		console.log(action.currentID)
+			return Object.assign({}, state, {
+				isEditRecipeOpen: action.isEditRecipeOpen,
+				currentRecipe: action.currentID
 			})
 
 		case 'CLOSE_MODAL':
-		console.log('closing: ',state)
 			return Object.assign({}, state, {
-				isAddRecipeOpen: action.isAddRecipeOpen
+				isAddRecipeOpen: false,
+				isEditRecipeOpen: false,
 			})
 
 		case 'CREATE_RECIPE':
@@ -41,13 +52,27 @@ const recipeReducer = (state, action) => {
 				Recipes: recipes
 			})
 
-		case 'EDIT_RECIPE':
-			console.log(action.ID)
-
 		case 'DELETE_RECIPE':
-		return Object.assign({}, state, {
-			Recipes: state.Recipes.filter(function(recipe) { return recipe.ID != action.ID })
-		})
+			console.log('deleting', action.ID)
+			return Object.assign({}, state, {
+				Recipes: state.Recipes.filter(function(recipe) {
+					return recipe.ID != action.ID
+				})
+			})
+
+		case 'EDIT_R':
+			var currentRecipes = state.Recipes.slice();
+			var oldRecipe = currentRecipes[state.currentRecipe];
+			const newRecipe = {
+				RecipeName: action.fields.RecipeName,
+				RecipeDescription: action.fields.RecipeDescription,
+				RecipeIngredients: action.fields.RecipeIngredients,
+				ID: state.currentRecipe
+			}
+			currentRecipes[state.currentRecipe] = newRecipe;
+			return Object.assign({}, state, {
+				Recipes: currentRecipes
+			})
 
     	default:
       		return state

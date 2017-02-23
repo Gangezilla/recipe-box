@@ -1,9 +1,19 @@
-export const openRecipeModal = () => {
+export const openRecipeModal = (message, buttonMessage, modalStatus) => {
 	return {
 	    type: 'OPEN_MODAL',
 	    isAddRecipeOpen: true,
-	    headerMessage: "Adding a new recipe!"
+	    headerMessage: message,
+	    buttonMessage: buttonMessage,
+	    modalStatus: modalStatus,
   	}
+}
+
+export const openEditModal = (ID) => {
+	return {
+		type: 'EDIT_MODAL',
+		isEditRecipeOpen: true,
+		currentID: ID,
+	}
 }
 
 export const closeRecipeModal = () => {
@@ -29,10 +39,10 @@ export const deleteRecipe = (ID) => {
 	}
 }
 
-export const editRecipe = (ID) => {
+export const editR = (fields, ID) => {
 	return {
-		type: 'EDIT_RECIPE',
-		ID: ID
+		type: 'EDIT_R',
+		fields: fields,
 	}
 }
 

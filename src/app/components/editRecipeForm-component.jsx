@@ -11,12 +11,11 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
 )
 
 const required = value => value ? undefined : 'Required'
-const RecipeForm = ( props ) => {
-  const { handleSubmit, reset, onSubmit, addNewRecipe, status } = props
-  console.log(status)
+const EditForm = ( props ) => {
+  const { handleSubmit, reset, onSubmit, editR, status } = props
   return (
   	<div>
-    <form onSubmit={handleSubmit((fields) => addNewRecipe(fields))}>
+    <form onSubmit={handleSubmit((fields) => editR(fields))}>
       <div>
         <div>
         	<label>Name of Recipe</label>
@@ -31,11 +30,11 @@ const RecipeForm = ( props ) => {
 	         <Field name="RecipeIngredients" component="textarea" placeholder="Seperate ingredients with commas"/>
         </div>
       </div>
-        <button type="submit">Create!</button>
+        <button type="submit">Edit!</button>
         <button type="button" onClick={reset}>Start Again</button>
     </form>
     </div>
   )
 }
 
-export default RecipeForm
+export default EditForm

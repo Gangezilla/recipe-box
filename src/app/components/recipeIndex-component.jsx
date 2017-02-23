@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
 import { Field, reduxForm } from 'redux-form'
 import RecipeFormContainer from '../containers/addRecipeForm-container.jsx'
+import EditFormContainer from '../containers/editRecipeForm-container.jsx'
 
 //props go in here.
 
 const RecipeIndex = ({
-	openRecipeModal, closeRecipeModal, isAddRecipeOpen, headerMessage, addNewRecipe, Recipes, editRecipe, deleteRecipe,
+	openRecipeModal, closeRecipeModal, isAddRecipeOpen, headerMessage, addNewRecipe, Recipes, editRecipe, deleteRecipe, editR, buttonMessage, modalStatus, isEditRecipeOpen, openEditModal
 	 }) => {
 	//ternary statement for if we don't have any recipes.
-console.log('component:' , Recipes)
 	return (
 		<div>
 			<h2> working real well! </h2>
@@ -29,7 +29,7 @@ console.log('component:' , Recipes)
 						</span>
 						<span> Need to make a function to loop through ingredients... and display them </span>
 						<button onClick={() => deleteRecipe(recipe.ID)}> Delete </button>
-						<button onClick={() => editRecipe(recipe.ID)}> Edit </button>
+						<button onClick={() => openEditModal(recipe.ID)}> Edit </button>
 					</div>
 						)
 				}.bind(this))}
@@ -43,7 +43,18 @@ console.log('component:' , Recipes)
 		  	contentLabel="Recipe Setup"
 		>
 		  	<h1>{headerMessage}</h1>
-		  	<RecipeFormContainer />
+		  	<RecipeFormContainer status={modalStatus}/>
+		  	<button onClick= {() => closeRecipeModal()}>Close</button>
+		</Modal>
+
+		<Modal
+			isOpen={isEditRecipeOpen}
+		  	style=""
+		  	contentLabel="Edit Recipe"
+		>
+		  	<h1>Edit your recipe!</h1>
+		  	<h1> Time to edit  </h1>
+		  	<EditFormContainer />
 		  	<button onClick= {() => closeRecipeModal()}>Close</button>
 		</Modal>
 		</div>
