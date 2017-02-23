@@ -61,18 +61,19 @@ const recipeReducer = (state, action) => {
 			})
 
 		case 'EDIT_R':
-			var currentRecipes = state.Recipes.slice();
-			var oldRecipe = currentRecipes[state.currentRecipe];
-			const newRecipe = {
-				RecipeName: action.fields.RecipeName,
-				RecipeDescription: action.fields.RecipeDescription,
-				RecipeIngredients: action.fields.RecipeIngredients,
-				ID: state.currentRecipe
-			}
-			currentRecipes[state.currentRecipe] = newRecipe;
-			return Object.assign({}, state, {
-				Recipes: currentRecipes
-			})
+				var allRecipes = state.Recipes.slice();
+				var oldRecipe = allRecipes[state.currentRecipe];
+				// make a shallow copy
+				var newRecipe = Object.assign({}, oldRecipe);
+				// we can now modify immediate properties of the copy
+				newRecipe.RecipeName = action.fields.RecipeName
+				newRecipe.RecipeDescription = action.fields.RecipeDescription
+				newRecipe.RecipeIngredients = action.fields.RecipeIngredients
+				newRecipe.ID = state.currentRecipe
+				allRecipes[state.currentRecipe] = newRecipe;
+				return Object.assign({}, state, {
+					Recipes: allRecipes
+				})
 
     	default:
       		return state

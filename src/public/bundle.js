@@ -63,17 +63,21 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _index = __webpack_require__(/*! ./reducers/index.jsx */ 457);
+	var _index = __webpack_require__(/*! ./reducers/index.jsx */ 459);
 	
 	var _index2 = _interopRequireDefault(_index);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var store = (0, _redux.createStore)(_index2.default);
+	var persistedState = localStorage.getItem('Recipes') ? JSON.parse(localStorage.getItem('Recipes')) : {};
+	console.log(persistedState);
 	
-	// store.subscribe(() =>
-	// 	console.log('index: ',store.getState())
-	// )
+	var store = (0, _redux.createStore)(_index2.default, persistedState);
+	
+	store.subscribe(function () {
+		//console.log(store.getState().recipeReducer.Recipes)
+		localStorage.setItem('Recipes', JSON.stringify(store.getState()));
+	});
 	
 	(0, _reactDom.render)(_react2.default.createElement(
 		_reactRedux.Provider,
@@ -25144,7 +25148,7 @@
 	
 	var _addRecipeFormContainer2 = _interopRequireDefault(_addRecipeFormContainer);
 	
-	var _editRecipeFormContainer = __webpack_require__(/*! ../containers/editRecipeForm-container.jsx */ 459);
+	var _editRecipeFormContainer = __webpack_require__(/*! ../containers/editRecipeForm-container.jsx */ 457);
 	
 	var _editRecipeFormContainer2 = _interopRequireDefault(_editRecipeFormContainer);
 	
@@ -37819,128 +37823,6 @@
 
 /***/ },
 /* 457 */
-/*!************************************!*\
-  !*** ./src/app/reducers/index.jsx ***!
-  \************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _redux = __webpack_require__(/*! redux */ 194);
-	
-	var _reduxForm = __webpack_require__(/*! redux-form */ 244);
-	
-	var _recipeReducers = __webpack_require__(/*! ./recipe-reducers.jsx */ 458);
-	
-	var _recipeReducers2 = _interopRequireDefault(_recipeReducers);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var rootReducer = (0, _redux.combineReducers)({
-		recipeReducer: _recipeReducers2.default,
-		form: _reduxForm.reducer
-	});
-	
-	exports.default = rootReducer;
-
-/***/ },
-/* 458 */
-/*!**********************************************!*\
-  !*** ./src/app/reducers/recipe-reducers.jsx ***!
-  \**********************************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	var recipeReducer = function recipeReducer(state, action) {
-		if (state === undefined) {
-			return {
-				headerMessage: 'Adding a new recipe!',
-				buttonMessage: 'Create',
-				id: 0,
-				modalStatus: 'add',
-				Recipes: [{
-					RecipeName: 'Pizza',
-					RecipeDescription: 'A tasty treat for all involved.',
-					ID: 0
-				}]
-			};
-		}
-	
-		switch (action.type) {
-	
-			case 'OPEN_MODAL':
-				return Object.assign({}, state, {
-					isAddRecipeOpen: action.isAddRecipeOpen,
-					headerMessage: action.headerMessage,
-					buttonMessage: action.buttonMessage,
-					modalStatus: action.modalStatus
-				});
-	
-			case 'EDIT_MODAL':
-				console.log(action.currentID);
-				return Object.assign({}, state, {
-					isEditRecipeOpen: action.isEditRecipeOpen,
-					currentRecipe: action.currentID
-				});
-	
-			case 'CLOSE_MODAL':
-				return Object.assign({}, state, {
-					isAddRecipeOpen: false,
-					isEditRecipeOpen: false
-				});
-	
-			case 'CREATE_RECIPE':
-				console.log(action);
-				state.id++;
-				var recipes = state.Recipes.slice(0);
-				recipes.push({
-					RecipeName: action.recipeInfo.RecipeName,
-					RecipeDescription: action.recipeInfo.RecipeDescription,
-					RecipeIngredients: action.recipeInfo.recipeIngredients,
-					ID: state.id
-				});
-				return Object.assign({}, state, {
-					Recipes: recipes
-				});
-	
-			case 'DELETE_RECIPE':
-				console.log('deleting', action.ID);
-				return Object.assign({}, state, {
-					Recipes: state.Recipes.filter(function (recipe) {
-						return recipe.ID != action.ID;
-					})
-				});
-	
-			case 'EDIT_R':
-				var currentRecipes = state.Recipes.slice();
-				var oldRecipe = currentRecipes[state.currentRecipe];
-				var newRecipe = {
-					RecipeName: action.fields.RecipeName,
-					RecipeDescription: action.fields.RecipeDescription,
-					RecipeIngredients: action.fields.RecipeIngredients,
-					ID: state.currentRecipe
-				};
-				currentRecipes[state.currentRecipe] = newRecipe;
-				return Object.assign({}, state, {
-					Recipes: currentRecipes
-				});
-	
-			default:
-				return state;
-		}
-	};
-	exports.default = recipeReducer;
-
-/***/ },
-/* 459 */
 /*!*********************************************************!*\
   !*** ./src/app/containers/editRecipeForm-container.jsx ***!
   \*********************************************************/
@@ -37954,7 +37836,7 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 183);
 	
-	var _editRecipeFormComponent = __webpack_require__(/*! ../components/editRecipeForm-component.jsx */ 460);
+	var _editRecipeFormComponent = __webpack_require__(/*! ../components/editRecipeForm-component.jsx */ 458);
 	
 	var _editRecipeFormComponent2 = _interopRequireDefault(_editRecipeFormComponent);
 	
@@ -37983,7 +37865,7 @@
 	})(_editRecipeFormComponent2.default));
 
 /***/ },
-/* 460 */
+/* 458 */
 /*!*********************************************************!*\
   !*** ./src/app/components/editRecipeForm-component.jsx ***!
   \*********************************************************/
@@ -38105,6 +37987,129 @@
 	};
 	
 	exports.default = EditForm;
+
+/***/ },
+/* 459 */
+/*!************************************!*\
+  !*** ./src/app/reducers/index.jsx ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _redux = __webpack_require__(/*! redux */ 194);
+	
+	var _reduxForm = __webpack_require__(/*! redux-form */ 244);
+	
+	var _recipeReducers = __webpack_require__(/*! ./recipe-reducers.jsx */ 460);
+	
+	var _recipeReducers2 = _interopRequireDefault(_recipeReducers);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var rootReducer = (0, _redux.combineReducers)({
+		recipeReducer: _recipeReducers2.default,
+		form: _reduxForm.reducer
+	});
+	
+	exports.default = rootReducer;
+
+/***/ },
+/* 460 */
+/*!**********************************************!*\
+  !*** ./src/app/reducers/recipe-reducers.jsx ***!
+  \**********************************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var recipeReducer = function recipeReducer(state, action) {
+		if (state === undefined) {
+			return {
+				headerMessage: 'Adding a new recipe!',
+				buttonMessage: 'Create',
+				id: 0,
+				modalStatus: 'add',
+				Recipes: [{
+					RecipeName: 'Pizza',
+					RecipeDescription: 'A tasty treat for all involved.',
+					ID: 0
+				}]
+			};
+		}
+	
+		switch (action.type) {
+	
+			case 'OPEN_MODAL':
+				return Object.assign({}, state, {
+					isAddRecipeOpen: action.isAddRecipeOpen,
+					headerMessage: action.headerMessage,
+					buttonMessage: action.buttonMessage,
+					modalStatus: action.modalStatus
+				});
+	
+			case 'EDIT_MODAL':
+				console.log(action.currentID);
+				return Object.assign({}, state, {
+					isEditRecipeOpen: action.isEditRecipeOpen,
+					currentRecipe: action.currentID
+				});
+	
+			case 'CLOSE_MODAL':
+				return Object.assign({}, state, {
+					isAddRecipeOpen: false,
+					isEditRecipeOpen: false
+				});
+	
+			case 'CREATE_RECIPE':
+				console.log(action);
+				state.id++;
+				var recipes = state.Recipes.slice(0);
+				recipes.push({
+					RecipeName: action.recipeInfo.RecipeName,
+					RecipeDescription: action.recipeInfo.RecipeDescription,
+					RecipeIngredients: action.recipeInfo.recipeIngredients,
+					ID: state.id
+				});
+				return Object.assign({}, state, {
+					Recipes: recipes
+				});
+	
+			case 'DELETE_RECIPE':
+				console.log('deleting', action.ID);
+				return Object.assign({}, state, {
+					Recipes: state.Recipes.filter(function (recipe) {
+						return recipe.ID != action.ID;
+					})
+				});
+	
+			case 'EDIT_R':
+				var allRecipes = state.Recipes.slice();
+				var oldRecipe = allRecipes[state.currentRecipe];
+				// make a shallow copy
+				var newRecipe = Object.assign({}, oldRecipe);
+				// we can now modify immediate properties of the copy
+				newRecipe.RecipeName = action.fields.RecipeName;
+				newRecipe.RecipeDescription = action.fields.RecipeDescription;
+				newRecipe.RecipeIngredients = action.fields.RecipeIngredients;
+				newRecipe.ID = state.currentRecipe;
+				allRecipes[state.currentRecipe] = newRecipe;
+				return Object.assign({}, state, {
+					Recipes: allRecipes
+				});
+	
+			default:
+				return state;
+		}
+	};
+	exports.default = recipeReducer;
 
 /***/ }
 /******/ ]);

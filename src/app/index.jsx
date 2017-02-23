@@ -5,11 +5,18 @@ import { createStore } from 'redux'
 import App  from './components/app.jsx'
 import rootReducer from './reducers/index.jsx'
 
-let store = createStore(rootReducer)
+const persistedState = localStorage.getItem('Recipes') ? JSON.parse(localStorage.getItem('Recipes')) : {}
+console.log(persistedState)
 
-// store.subscribe(() =>
-// 	console.log('index: ',store.getState())
-// )
+const store = createStore(
+	rootReducer,
+	persistedState,
+	)
+
+store.subscribe(() => {
+	//console.log(store.getState().recipeReducer.Recipes)
+  	localStorage.setItem('Recipes', JSON.stringify(store.getState()))
+})
 
 render(
 	<Provider store={store}>
