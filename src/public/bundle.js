@@ -38091,11 +38091,16 @@
 				});
 	
 			case 'EDIT_R':
-				var allRecipes = state.Recipes.slice();
-				var oldRecipe = allRecipes[state.currentRecipe];
-				// make a shallow copy
+				var allRecipes = state.Recipes;
+				var oldRecipe;
+				allRecipes.map(function (recipe) {
+					if (recipe.ID === state.currentRecipe) {
+						console.log('matching!');
+						oldRecipe = recipe;
+					}
+				});
 				var newRecipe = Object.assign({}, oldRecipe);
-				// we can now modify immediate properties of the copy
+				console.log(newRecipe);
 				newRecipe.RecipeName = action.fields.RecipeName;
 				newRecipe.RecipeDescription = action.fields.RecipeDescription;
 				newRecipe.RecipeIngredients = action.fields.RecipeIngredients;
