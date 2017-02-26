@@ -9,6 +9,7 @@ const recipeReducer = (state, action) => {
 				{
 					RecipeName: 'Pizza',
 					RecipeDescription: 'A tasty treat for all involved.',
+					RecipeIngredients: ['ham', 'pineapple', 'tomato paste'],
 					ID: 0,
 				}
 			],
@@ -45,7 +46,7 @@ const recipeReducer = (state, action) => {
 			recipes.push({
 				RecipeName: action.recipeInfo.RecipeName,
 				RecipeDescription: action.recipeInfo.RecipeDescription,
-				RecipeIngredients: action.recipeInfo.recipeIngredients,
+				RecipeIngredients: action.recipeInfo.RecipeIngredients.split(','),
 				ID: state.id,
 			})
 			return Object.assign({}, state, {
@@ -73,7 +74,7 @@ const recipeReducer = (state, action) => {
 			console.log(newRecipe)
 			newRecipe.RecipeName = action.fields.RecipeName
 			newRecipe.RecipeDescription = action.fields.RecipeDescription
-			newRecipe.RecipeIngredients = action.fields.RecipeIngredients
+			newRecipe.RecipeIngredients = action.fields.RecipeIngredients.split(',')
 			newRecipe.ID = state.currentRecipe
 			allRecipes[state.currentRecipe] = newRecipe;
 			return Object.assign({}, state, {

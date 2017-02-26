@@ -4,8 +4,8 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
   <div>
     <label>{label}</label>
     <div>
-      <input {...input} placeholder={label} type={type}/>
-      {touched && ((error && <span>{error}</span>) || (warning && <span>{warning}</span>))}
+      <input className="input-box"{...input} placeholder={label} type={type}/>
+      {touched && ((error && <span className="error">{error}</span>) || (warning && <span className="warning">{warning}</span>))}
     </div>
   </div>
 )
@@ -16,7 +16,7 @@ const EditForm = ( props ) => {
   return (
   	<div>
     <form onSubmit={handleSubmit((fields) => editR(fields))}>
-      <div>
+      <div className="form-fields">
         <div>
         	<label>Name of Recipe</label>
           <Field name="RecipeName" component={renderField} type="text" placeholder="Name" validate={required}/>
@@ -27,11 +27,11 @@ const EditForm = ( props ) => {
         </div>
          <div>
 	         <label>Recipe Ingredients</label>
-	         <Field name="RecipeIngredients" component="textarea" placeholder="Seperate ingredients with commas"/>
+	         <Field name="RecipeIngredients" component="textarea" placeholder="Seperate ingredients with commas" validate={required}/>
         </div>
       </div>
-        <button type="submit">Edit!</button>
-        <button type="button" onClick={reset}>Start Again</button>
+        <button className="btn pair" type="submit">Edit!</button>
+        <button className="btn pair" type="button" onClick={reset}>Start Again</button>
     </form>
     </div>
   )

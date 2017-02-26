@@ -4,8 +4,8 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
   <div>
     <label>{label}</label>
     <div>
-      <input {...input} placeholder={label} type={type}/>
-      {touched && ((error && <span>{error}</span>) || (warning && <span>{warning}</span>))}
+      <input className="input-box"{...input} placeholder={label} type={type}/>
+      {touched && ((error && <span className="error">{error}</span>) || (warning && <span className="warning">{warning}</span>))}
     </div>
   </div>
 )
@@ -13,11 +13,10 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
 const required = value => value ? undefined : 'Required'
 const RecipeForm = ( props ) => {
   const { handleSubmit, reset, onSubmit, addNewRecipe, status } = props
-  console.log(status)
   return (
   	<div>
     <form onSubmit={handleSubmit((fields) => addNewRecipe(fields))}>
-      <div>
+      <div className="form-fields">
         <div>
         	<label>Name of Recipe</label>
           <Field name="RecipeName" component={renderField} type="text" placeholder="Name" validate={required}/>
@@ -28,11 +27,11 @@ const RecipeForm = ( props ) => {
         </div>
          <div>
 	         <label>Recipe Ingredients</label>
-	         <Field name="RecipeIngredients" component="textarea" placeholder="Seperate ingredients with commas"/>
+	         <Field name="RecipeIngredients" component="textarea" placeholder="Seperate ingredients with commas" validate={required}/>
         </div>
       </div>
-        <button type="submit">Create!</button>
-        <button type="button" onClick={reset}>Start Again</button>
+        <button className="btn pair" type="submit">Create!</button>
+        <button className="btn pair" type="button" onClick={reset}>Start Again</button>
     </form>
     </div>
   )

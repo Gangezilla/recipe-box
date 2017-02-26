@@ -1,0 +1,145 @@
+// Coding standards derived from http://codeguide.co/#css-declaration-order
+// Positioning
+// Box model
+// Typographic
+// Visual
+
+// BASE
+
+// MODULE
+// Styling for modal elements in here
+.header-message {
+	font-family: 'Open Sans', sans-serif;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.form-fields {
+	label {
+		font-family: 'Open Sans', sans-serif;
+	}
+
+ 	input, textarea {
+		padding-top: 5px;
+		padding-right: 5px;
+		padding-bottom: 5px;
+		padding-left: 5px;
+		margin-top: 5px;
+		margin-bottom: 5px;
+		width: 100%;
+		border: 1px solid black;
+	}
+
+	.error {
+		display: block;
+		color: red;
+	}
+}
+//Misc pieces that are usually just standalone messages.
+.top-title {
+	font-family: 'Open Sans', sans-serif;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+.norecipes-message {
+	display: block;
+	font-family: 'Open Sans', sans-serif;
+	text-align: center;
+	font-size: 18px;
+}
+
+.recipe-container {
+	//@include grid-container();
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: baseline;
+
+}
+
+//Styling for each individual recipe.
+.recipe-box {
+	margin-bottom: 15px;
+	border: 1px solid black;
+	border-radius: 5px;
+	flex-basis: 90%;
+
+	@media (min-width: 450px) {
+			padding: 10px;
+			min-height: 350px;
+			flex-basis: 30%;
+		}
+
+	.recipe-name {
+		display: block;
+		margin-top: 20px;
+		font-size: 20px;
+		text-align: center;
+		font-family: 'Open Sans', sans-serif;
+		font-weight: 700;
+		text-transform: uppercase;
+
+		// color: #F29C53;
+	}
+
+	.recipe-description {
+		display: block;
+		padding-right: 10px;
+		padding-left: 10px;
+		margin-top: 10px;
+		font-size: 18px;
+		text-align: center;
+		font-family: 'Open Sans', sans-serif;
+	}
+
+	.recipe-ingredients {
+		padding-left: 40px;
+
+		@media (min-width: 450px) {
+			padding-left: 10px;
+		}
+
+		& .ingredient {
+			margin-left: 15px;
+			text-transform: capitalize;
+		}
+	}
+
+}
+
+//Buttons
+.btn {
+	margin: 0 auto;
+	display: block;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	margin-bottom: 15px;
+	width: 90%;
+	font-size: 14px;
+	text-transform: uppercase;
+	background: transparent;
+	border: 1px black solid;
+	border-radius: 5px;
+
+	&.pair {
+		display: inline-block;
+		margin-top: 10px;
+		margin-left: 15px;
+		width: 43%;
+
+	}
+}
+
+.add-new {
+		@media (min-width: 450px) {
+			width: 25%;
+		}
+	}
+// STATE
+.is-hidden {
+	display: none;
+}

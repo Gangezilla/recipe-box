@@ -25034,8 +25034,8 @@
 	    null,
 	    _react2.default.createElement(
 	      'h1',
-	      null,
-	      ' ternary statement for if name show name else just welcome '
+	      { className: 'top-title' },
+	      'My Recipes'
 	    ),
 	    _react2.default.createElement(_recipeIndexContainer2.default, null)
 	  );
@@ -25171,14 +25171,15 @@
 		    isEditRecipeOpen = _ref.isEditRecipeOpen,
 		    openEditModal = _ref.openEditModal;
 	
-		//ternary statement for if we don't have any recipes.
 		return _react2.default.createElement(
 			'div',
-			null,
+			{ className: 'top-container' },
 			_react2.default.createElement(
-				'h2',
-				null,
-				' working real well! '
+				'button',
+				{ className: 'btn add-new', onClick: function onClick() {
+						return openRecipeModal();
+					} },
+				' Add a New Recipe '
 			),
 			_react2.default.createElement(
 				'span',
@@ -25189,6 +25190,7 @@
 				'div',
 				{ className: Recipes !== [] ? 'recipe-container' : 'is-hidden' },
 				Recipes.map(function (recipe) {
+					console.log(recipe.RecipeIngredients);
 					return _react2.default.createElement(
 						'div',
 						{ className: 'recipe-box' },
@@ -25196,9 +25198,7 @@
 							'span',
 							{ className: 'recipe-name',
 								key: recipe.RecipeName },
-							recipe.RecipeName,
-							' - ',
-							recipe.ID
+							recipe.RecipeName
 						),
 						_react2.default.createElement(
 							'span',
@@ -25207,20 +25207,28 @@
 							recipe.RecipeDescription
 						),
 						_react2.default.createElement(
-							'span',
-							null,
-							' Need to make a function to loop through ingredients... and display them '
+							'ul',
+							{ className: 'recipe-ingredients' },
+							recipe.RecipeIngredients.map(function (ingredient) {
+								return _react2.default.createElement(
+									'li',
+									{ className: 'ingredient' },
+									' ',
+									ingredient,
+									' '
+								);
+							})
 						),
 						_react2.default.createElement(
 							'button',
-							{ onClick: function onClick() {
+							{ className: 'btn delete', onClick: function onClick() {
 									return deleteRecipe(recipe.ID);
 								} },
 							' Delete '
 						),
 						_react2.default.createElement(
 							'button',
-							{ onClick: function onClick() {
+							{ className: 'btn edit', onClick: function onClick() {
 									return openEditModal(recipe.ID);
 								} },
 							' Edit '
@@ -25229,16 +25237,11 @@
 				}.bind(undefined))
 			),
 			_react2.default.createElement(
-				'p',
-				null,
-				' next, need to have a button in here with an onclick to generate a new recipe '
-			),
-			_react2.default.createElement(
 				'button',
-				{ onClick: function onClick() {
+				{ className: Recipes.length == 0 ? 'is-hidden' : 'btn add-new', onClick: function onClick() {
 						return openRecipeModal();
 					} },
-				' Add a new recipe '
+				' Add a New Recipe '
 			),
 			_react2.default.createElement(
 				_reactModal2.default,
@@ -25249,13 +25252,13 @@
 				},
 				_react2.default.createElement(
 					'h1',
-					null,
+					{ className: 'header-message' },
 					headerMessage
 				),
 				_react2.default.createElement(_addRecipeFormContainer2.default, { status: modalStatus }),
 				_react2.default.createElement(
 					'button',
-					{ onClick: function onClick() {
+					{ className: 'btn close-modal', onClick: function onClick() {
 							return closeRecipeModal();
 						} },
 					'Close'
@@ -25270,18 +25273,13 @@
 				},
 				_react2.default.createElement(
 					'h1',
-					null,
+					{ className: 'header-message' },
 					'Edit your recipe!'
-				),
-				_react2.default.createElement(
-					'h1',
-					null,
-					' Time to edit  '
 				),
 				_react2.default.createElement(_editRecipeFormContainer2.default, null),
 				_react2.default.createElement(
 					'button',
-					{ onClick: function onClick() {
+					{ className: 'btn close-modal', onClick: function onClick() {
 							return closeRecipeModal();
 						} },
 					'Close'
@@ -37678,14 +37676,14 @@
 	    _react2.default.createElement(
 	      'div',
 	      null,
-	      _react2.default.createElement('input', _extends({}, input, { placeholder: label, type: type })),
+	      _react2.default.createElement('input', _extends({ className: 'input-box' }, input, { placeholder: label, type: type })),
 	      touched && (error && _react2.default.createElement(
 	        'span',
-	        null,
+	        { className: 'error' },
 	        error
 	      ) || warning && _react2.default.createElement(
 	        'span',
-	        null,
+	        { className: 'warning' },
 	        warning
 	      ))
 	    )
@@ -37702,7 +37700,6 @@
 	      addNewRecipe = props.addNewRecipe,
 	      status = props.status;
 	
-	  console.log(status);
 	  return _react2.default.createElement(
 	    'div',
 	    null,
@@ -37713,7 +37710,7 @@
 	        }) },
 	      _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'form-fields' },
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -37742,17 +37739,17 @@
 	            null,
 	            'Recipe Ingredients'
 	          ),
-	          _react2.default.createElement(_reduxForm.Field, { name: 'RecipeIngredients', component: 'textarea', placeholder: 'Seperate ingredients with commas' })
+	          _react2.default.createElement(_reduxForm.Field, { name: 'RecipeIngredients', component: 'textarea', placeholder: 'Seperate ingredients with commas', validate: required })
 	        )
 	      ),
 	      _react2.default.createElement(
 	        'button',
-	        { type: 'submit' },
+	        { className: 'btn pair', type: 'submit' },
 	        'Create!'
 	      ),
 	      _react2.default.createElement(
 	        'button',
-	        { type: 'button', onClick: reset },
+	        { className: 'btn pair', type: 'button', onClick: reset },
 	        'Start Again'
 	      )
 	    )
@@ -37906,14 +37903,14 @@
 	    _react2.default.createElement(
 	      'div',
 	      null,
-	      _react2.default.createElement('input', _extends({}, input, { placeholder: label, type: type })),
+	      _react2.default.createElement('input', _extends({ className: 'input-box' }, input, { placeholder: label, type: type })),
 	      touched && (error && _react2.default.createElement(
 	        'span',
-	        null,
+	        { className: 'error' },
 	        error
 	      ) || warning && _react2.default.createElement(
 	        'span',
-	        null,
+	        { className: 'warning' },
 	        warning
 	      ))
 	    )
@@ -37940,7 +37937,7 @@
 	        }) },
 	      _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'form-fields' },
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -37969,17 +37966,17 @@
 	            null,
 	            'Recipe Ingredients'
 	          ),
-	          _react2.default.createElement(_reduxForm.Field, { name: 'RecipeIngredients', component: 'textarea', placeholder: 'Seperate ingredients with commas' })
+	          _react2.default.createElement(_reduxForm.Field, { name: 'RecipeIngredients', component: 'textarea', placeholder: 'Seperate ingredients with commas', validate: required })
 	        )
 	      ),
 	      _react2.default.createElement(
 	        'button',
-	        { type: 'submit' },
+	        { className: 'btn pair', type: 'submit' },
 	        'Edit!'
 	      ),
 	      _react2.default.createElement(
 	        'button',
-	        { type: 'button', onClick: reset },
+	        { className: 'btn pair', type: 'button', onClick: reset },
 	        'Start Again'
 	      )
 	    )
@@ -38040,6 +38037,7 @@
 				Recipes: [{
 					RecipeName: 'Pizza',
 					RecipeDescription: 'A tasty treat for all involved.',
+					RecipeIngredients: ['ham', 'pineapple', 'tomato paste'],
 					ID: 0
 				}]
 			};
@@ -38075,7 +38073,7 @@
 				recipes.push({
 					RecipeName: action.recipeInfo.RecipeName,
 					RecipeDescription: action.recipeInfo.RecipeDescription,
-					RecipeIngredients: action.recipeInfo.recipeIngredients,
+					RecipeIngredients: action.recipeInfo.RecipeIngredients.split(','),
 					ID: state.id
 				});
 				return Object.assign({}, state, {
@@ -38103,7 +38101,7 @@
 				console.log(newRecipe);
 				newRecipe.RecipeName = action.fields.RecipeName;
 				newRecipe.RecipeDescription = action.fields.RecipeDescription;
-				newRecipe.RecipeIngredients = action.fields.RecipeIngredients;
+				newRecipe.RecipeIngredients = action.fields.RecipeIngredients.split(',');
 				newRecipe.ID = state.currentRecipe;
 				allRecipes[state.currentRecipe] = newRecipe;
 				return Object.assign({}, state, {
