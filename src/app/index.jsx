@@ -6,7 +6,6 @@ import App  from './components/app.jsx'
 import rootReducer from './reducers/index.jsx'
 
 const persistedState = localStorage.getItem('Recipes') ? JSON.parse(localStorage.getItem('Recipes')) : {}
-console.log(persistedState)
 
 const store = createStore(
 	rootReducer,
@@ -14,7 +13,6 @@ const store = createStore(
 	)
 
 store.subscribe(() => {
-	//console.log(store.getState().recipeReducer.Recipes)
   	localStorage.setItem('Recipes', JSON.stringify(store.getState()))
 })
 

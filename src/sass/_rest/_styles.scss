@@ -5,18 +5,42 @@
 // Visual
 
 // BASE
+body {
+	background-color: #1B2737;
+}
 
+span, li {
+	color: white;
+}
+
+.top-container {
+	padding: 30px;
+}
+
+.ReactModal__Body--open {
+  overflow-y: hidden;
+}
 // MODULE
+
+
 // Styling for modal elements in here
 .header-message {
+	margin-top: 0;
+	padding-top: 15px;
+	padding-bottom: 15px;
 	font-family: 'Open Sans', sans-serif;
+	color: white;
 	text-align: center;
 	text-transform: uppercase;
+	background-color: #1D8DEE;
 }
 
 .form-fields {
+	margin-right: 20px;
+	margin-left: 20px;
 	label {
 		font-family: 'Open Sans', sans-serif;
+		color: white;
 	}
 
  	input, textarea {
@@ -26,6 +50,8 @@
 		padding-left: 5px;
 		margin-top: 5px;
 		margin-bottom: 5px;
+		max-width: 100%;
+		max-height: 150px;
 		width: 100%;
 		border: 1px solid black;
 	}
@@ -55,32 +81,33 @@
 	flex-wrap: wrap;
 	flex-direction: row;
 	justify-content: space-around;
-	align-items: baseline;
-
+	align-items: initial;
 }
 
 //Styling for each individual recipe.
 .recipe-box {
 	margin-bottom: 15px;
-	border: 1px solid black;
+	width: 90%;
+	border: 1px solid #1D8DEE;
 	border-radius: 5px;
 	flex-basis: 90%;
 
 	@media (min-width: 450px) {
-			padding: 10px;
+			max-width: 220px;
 			min-height: 350px;
 			flex-basis: 30%;
 		}
 
 	.recipe-name {
 		display: block;
-		margin-top: 20px;
+		padding-top: 15px;
+		padding-bottom: 15px;
 		font-size: 20px;
 		text-align: center;
 		font-family: 'Open Sans', sans-serif;
 		font-weight: 700;
 		text-transform: uppercase;
-
+		background-color: #1D8DEE;
 		// color: #F29C53;
 	}
 
@@ -98,7 +125,7 @@
 		padding-left: 40px;
 
 		@media (min-width: 450px) {
-			padding-left: 10px;
+			padding-left: 15px;
 		}
 
 		& .ingredient {
@@ -122,8 +149,9 @@
 	font-size: 14px;
 	text-transform: uppercase;
 	background: transparent;
-	border: 1px black solid;
+	border: 1px white solid;
 	border-radius: 5px;
+	color: white;
 
 	&.pair {
 		display: inline-block;

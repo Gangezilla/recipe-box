@@ -30,7 +30,7 @@ const EditForm = ( props ) => {
 	         <Field name="RecipeIngredients" component="textarea" placeholder="Seperate ingredients with commas" validate={required}/>
         </div>
       </div>
-        <button className="btn pair" type="submit">Edit!</button>
+        <button className="btn pair" type="submit">Edit</button>
         <button className="btn pair" type="button" onClick={reset}>Start Again</button>
     </form>
     </div>

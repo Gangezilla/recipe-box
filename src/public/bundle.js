@@ -70,12 +70,10 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var persistedState = localStorage.getItem('Recipes') ? JSON.parse(localStorage.getItem('Recipes')) : {};
-	console.log(persistedState);
 	
 	var store = (0, _redux.createStore)(_index2.default, persistedState);
 	
 	store.subscribe(function () {
-		//console.log(store.getState().recipeReducer.Recipes)
 		localStorage.setItem('Recipes', JSON.stringify(store.getState()));
 	});
 	
@@ -25032,11 +25030,6 @@
 	  return _react2.default.createElement(
 	    'div',
 	    null,
-	    _react2.default.createElement(
-	      'h1',
-	      { className: 'top-title' },
-	      'My Recipes'
-	    ),
 	    _react2.default.createElement(_recipeIndexContainer2.default, null)
 	  );
 	};
@@ -25154,7 +25147,19 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	//props go in here.
+	var customStyles = {
+		content: {
+			top: '250px',
+			left: '50%',
+			bottom: 'auto',
+			transform: 'translate(-50%, -50%)',
+			width: '400px',
+			padding: '0',
+			border: '1px solid #1D8DEE',
+			backgroundColor: '#1B2737'
+	
+		}
+	};
 	
 	var RecipeIndex = function RecipeIndex(_ref) {
 		var openRecipeModal = _ref.openRecipeModal,
@@ -25190,7 +25195,6 @@
 				'div',
 				{ className: Recipes !== [] ? 'recipe-container' : 'is-hidden' },
 				Recipes.map(function (recipe) {
-					console.log(recipe.RecipeIngredients);
 					return _react2.default.createElement(
 						'div',
 						{ className: 'recipe-box' },
@@ -25247,7 +25251,7 @@
 				_reactModal2.default,
 				{
 					isOpen: isAddRecipeOpen,
-					style: '',
+					style: customStyles,
 					contentLabel: 'Recipe Setup'
 				},
 				_react2.default.createElement(
@@ -25268,13 +25272,13 @@
 				_reactModal2.default,
 				{
 					isOpen: isEditRecipeOpen,
-					style: '',
+					style: customStyles,
 					contentLabel: 'Edit Recipe'
 				},
 				_react2.default.createElement(
 					'h1',
 					{ className: 'header-message' },
-					'Edit your recipe!'
+					'Edit your recipe'
 				),
 				_react2.default.createElement(_editRecipeFormContainer2.default, null),
 				_react2.default.createElement(
@@ -37972,7 +37976,7 @@
 	      _react2.default.createElement(
 	        'button',
 	        { className: 'btn pair', type: 'submit' },
-	        'Edit!'
+	        'Edit'
 	      ),
 	      _react2.default.createElement(
 	        'button',

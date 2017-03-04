@@ -5,7 +5,20 @@ import { Field, reduxForm } from 'redux-form'
 import RecipeFormContainer from '../containers/addRecipeForm-container.jsx'
 import EditFormContainer from '../containers/editRecipeForm-container.jsx'
 
-//props go in here.
+
+const customStyles = {
+  content : {
+    top                 : '250px',
+    left                : '50%',
+    bottom              : 'auto',
+    transform           : 'translate(-50%, -50%)',
+    width				: '400px',
+    padding             : '0',
+    border	 			: '1px solid #1D8DEE',
+    backgroundColor		: '#1B2737'
+
+  }
+};
 
 const RecipeIndex = ({
 	openRecipeModal, closeRecipeModal, isAddRecipeOpen, headerMessage, addNewRecipe, Recipes, editRecipe, deleteRecipe, editR, buttonMessage, modalStatus, isEditRecipeOpen, openEditModal
@@ -16,7 +29,6 @@ const RecipeIndex = ({
 			<span className={Recipes.length == 0 ? 'norecipes-message' : 'is-hidden'}> Why don't you try adding something here? </span>
 			<div className={Recipes !== [] ? 'recipe-container' : 'is-hidden'}>
 				{Recipes.map(function(recipe) {
-					console.log(recipe.RecipeIngredients)
 					return (
 					<div className="recipe-box">
 						<span className="recipe-name"
@@ -42,7 +54,7 @@ const RecipeIndex = ({
 
 		<Modal
 			isOpen={isAddRecipeOpen}
-		  	style=""
+		  	style={customStyles}
 		  	contentLabel="Recipe Setup"
 		>
 		  	<h1 className="header-message">{headerMessage}</h1>
@@ -52,10 +64,10 @@ const RecipeIndex = ({
 
 		<Modal
 			isOpen={isEditRecipeOpen}
-		  	style=""
+		  	style={customStyles}
 		  	contentLabel="Edit Recipe"
 		>
-		  	<h1 className="header-message">Edit your recipe!</h1>
+		  	<h1 className="header-message">Edit your recipe</h1>
 		  	<EditFormContainer />
 		  	<button className="btn close-modal" onClick= {() => closeRecipeModal()}>Close</button>
 		</Modal>
